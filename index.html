@@ -116,7 +116,7 @@
     <aside class="fixed left-0 top-20 h-[calc(100vh-5rem)] flex flex-col p-6 z-40 bg-white border-r-4 border-black w-64 hidden xl:flex">
         <div class="mb-8">
             <h2 class="font-serif font-black text-black text-xl uppercase leading-tight">DICE ROLLER</h2>
-            <p class="font-mono text-xs opacity-60">V.1.0 ARCHIVE</p>
+            <p class="font-mono text-xs opacity-60">V.2.0 RAW AUDIT</p>
         </div>
         <div class="flex flex-col gap-2 flex-grow overflow-y-auto hide-scroll">
             <button onclick="app.rollDiceUI(1, 20)" class="text-black font-mono border-2 border-black mb-2 flex items-center justify-between px-4 py-4 hover:bg-black hover:text-white transition-none active:scale-95">
@@ -170,11 +170,18 @@
                     <div class="flex flex-col gap-2">
                         <label class="font-label font-bold text-xs uppercase tracking-widest">Level Cap</label>
                         <select id="pcLevelRange" class="w-full bg-white border-2 border-black font-label text-sm font-bold uppercase p-3 focus:ring-0 focus:border-black rounded-none">
-                            <option value="1">1st Level (No Magic)</option>
+                            <option value="1">1st Level (no magic items)</option>
                             <option value="2-4">Low (2-4)</option>
                             <option value="5-8" selected>Medium (5-8)</option>
                             <option value="9-12">High (9-12)</option>
-                            <option value="13-15">Epic (13-15)</option>
+                            <option value="13-15">Epic (13-15, house rule: beyond App. P)</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="font-label font-bold text-xs uppercase tracking-widest">Party Alignments</label>
+                        <select id="pcAlign" class="w-full bg-white border-2 border-black font-label text-sm font-bold uppercase p-3 focus:ring-0 focus:border-black rounded-none">
+                            <option value="compat" selected>Compatible set (DMG App. P)</option>
+                            <option value="any">Unrestricted</option>
                         </select>
                     </div>
                     <div class="flex flex-col gap-2">
@@ -182,19 +189,19 @@
                         <div class="flex flex-col border-2 border-black divide-y-2 divide-black">
                             <label class="flex items-center gap-3 p-3 cursor-pointer hover:bg-surface-container-low">
                                 <input type="radio" name="pcMethod" value="1" checked class="w-4 h-4 border-2 border-black text-black focus:ring-0 rounded-none"/>
-                                <span class="font-mono text-[11px] font-bold">METHOD I: 4D6 DROP LOW</span>
+                                <span class="font-mono text-[11px] font-bold">METHOD I: 4D6 DROP LOW, ARRANGE (DMG P.11)</span>
                             </label>
                             <label class="flex items-center gap-3 p-3 cursor-pointer hover:bg-surface-container-low">
                                 <input type="radio" name="pcMethod" value="2" class="w-4 h-4 border-2 border-black text-black focus:ring-0 rounded-none"/>
-                                <span class="font-mono text-[11px] font-bold">METHOD II: 3D6 BEST OF 12</span>
+                                <span class="font-mono text-[11px] font-bold">METHOD II: 3D6 X12, BEST 6, ARRANGE</span>
                             </label>
                             <label class="flex items-center gap-3 p-3 cursor-pointer hover:bg-surface-container-low">
                                 <input type="radio" name="pcMethod" value="3" class="w-4 h-4 border-2 border-black text-black focus:ring-0 rounded-none"/>
-                                <span class="font-mono text-[11px] font-bold">METHOD III: 3D6 X 6 PER STAT</span>
+                                <span class="font-mono text-[11px] font-bold">METHOD III: BEST OF 6 PER ABILITY, IN ORDER</span>
                             </label>
                             <label class="flex items-center gap-3 p-3 cursor-pointer hover:bg-surface-container-low">
                                 <input type="radio" name="pcMethod" value="4" class="w-4 h-4 border-2 border-black text-black focus:ring-0 rounded-none"/>
-                                <span class="font-mono text-[11px] font-bold">METHOD IV: BEST OF 12 SETS</span>
+                                <span class="font-mono text-[11px] font-bold">METHOD IV: 12 SETS IN ORDER, BEST SET</span>
                             </label>
                         </div>
                     </div>
@@ -277,7 +284,7 @@
                     <div class="flex flex-col gap-2">
                         <label class="font-label font-bold text-xs uppercase tracking-widest">Dungeon Level (1-20)</label>
                         <input type="number" id="rivalDungeonLevel" min="1" max="20" value="4" class="w-full bg-white border-2 border-black font-mono p-3 focus:ring-0 focus:border-black rounded-none">
-                        <p class="font-mono text-[9px] opacity-70">Determines character levels & follower types (Henchmen vs. Men-at-arms).</p>
+                        <p class="font-mono text-[9px] opacity-70">Sets character levels and follower type (men-at-arms to level 3, henchmen from level 4).</p>
                     </div>
                     <button onclick="app.generateRivalParty()" class="w-full mt-4 bg-black text-white py-6 font-headline font-bold text-2xl uppercase tracking-widest hatched-border hover:bg-white hover:text-black border-4 border-black transition-none">
                         SUMMON RIVALS
@@ -285,12 +292,12 @@
                     <div class="mt-4 p-4 border-2 border-black bg-surface-container-low">
                         <h3 class="font-label font-bold text-[10px] uppercase mb-2 border-b border-black pb-1">Encounter Rules Applied:</h3>
                         <ul class="font-mono text-[9px] space-y-1 list-disc pl-3">
-                            <li>Party size: 2-5 core characters + followers (total 9).</li>
-                            <li>Class generation enforces strict maximums (e.g. 1 Paladin max).</li>
-                            <li>Lvl 1-3 Dungeon: Followers are Men-at-Arms (100% Male).</li>
-                            <li>Lvl 4+ Dungeon: Followers are Henchmen (Level = 2/3 Master's Level).</li>
-                            <li>Magic Item matrices apply based on character level.</li>
-                            <li>Clerics & Druids receive pre-rolled spell loadouts with Wisdom bonuses.</li>
+                            <li>DMG p.175: 2-5 characters (d4+1), rounded out to 9 with followers.</li>
+                            <li>Classes by the Character Subtable d%, with the per-party maximums; incompatible results are ignored.</li>
+                            <li>Level: dungeon level through 4th, then d6+6 adjusted by 1 toward the dungeon level (max 12 until dungeon level 16).</li>
+                            <li>Dungeon level 1-3: men-at-arms (4-7 hp). Level 4+: henchmen at one-third master level, +1 per 3 levels above 8th.</li>
+                            <li>About 20% non-human, half of those multi-classed (DMG p.176). Magic items from DMG Tables I-IV.</li>
+                            <li>House rule: monster level is taken as the dungeon level.</li>
                         </ul>
                     </div>
                 </div>
@@ -348,10 +355,10 @@
                         <label class="font-label font-bold text-xs uppercase tracking-widest">Quantity Tier</label>
                         <select id="mercTier" class="w-full bg-white border-2 border-black font-label text-sm font-bold uppercase p-3 focus:ring-0 focus:border-black rounded-none">
                             <option value="random">RANDOM (D10)</option>
-                            <option value="0">TIER I — SMALL (D10: 1-4)</option>
-                            <option value="1">TIER II — MEDIUM (D10: 5-7)</option>
-                            <option value="2">TIER III — LARGE (D10: 8-9)</option>
-                            <option value="3">TIER IV — MAXIMUM (D10: 0)</option>
+                            <option value="0">TIER I - SMALL (D10: 1-4)</option>
+                            <option value="1">TIER II - MEDIUM (D10: 5-7)</option>
+                            <option value="2">TIER III - LARGE (D10: 8-9)</option>
+                            <option value="3">TIER IV - MAXIMUM (D10: 0)</option>
                         </select>
                     </div>
                     <button onclick="app.generateMercenaries()" class="w-full mt-4 bg-black text-white py-6 font-headline font-bold text-2xl uppercase tracking-widest hatched-border hover:bg-white hover:text-black border-4 border-black transition-none">
@@ -360,12 +367,12 @@
                     <div class="p-4 border-2 border-black bg-surface-container-low">
                         <h3 class="font-label font-bold text-[10px] uppercase mb-2 border-b border-black pb-1">Rules Applied:</h3>
                         <ul class="font-mono text-[9px] space-y-1 list-disc pl-3">
-                            <li>Regular troops: Level 0, 4–7 HP each.</li>
-                            <li>Auto-sergeants if >5 troops (1/10 min, 1/5 max).</li>
-                            <li>Lieutenant if Tier III roll yields >10 troops.</li>
-                            <li>Captain if Tier IV roll yields >20 troops.</li>
-                            <li>Sgt. pay = 10× troop rate. Lt./Cpt. = 100gp/lvl.</li>
-                            <li>Types seldom mixed — generate separate units.</li>
+                            <li>Regular troops: level 0 men-at-arms, 4-7 hp each (DMG p.30).</li>
+                            <li>Over 5 troops: serjeants, 1 per 10 minimum, 1 per 5 maximum, counted among the troops.</li>
+                            <li>Lieutenant (2nd or 3rd level) if more than 10 troops in Tier III or IV.</li>
+                            <li>Captain (5th-8th level) if Tier IV has more than 20 troops.</li>
+                            <li>Serjeant pay = 10x troop rate. Lt. and Capt. = 100gp per level.</li>
+                            <li>Types seldom mixed: generate separate units.</li>
                         </ul>
                     </div>
                 </div>
@@ -494,18 +501,18 @@
 
     </main>
 
+    <script src="rules.js"></script>
     <script>
+    const Q = QPRules;
     const app = {
         roster: [],
 
         // --- CORE DICE UTILITIES ---
-        roll(sides) { return Math.floor(Math.random() * sides) + 1; },
-        rollNd(n, sides) { let sum=0; for(let i=0;i<n;i++) sum+=this.roll(sides); return sum; },
-        rollPercentile() { return this.roll(100); },
-        rollTable(table) {
-            if (!table || !Array.isArray(table) || table.length === 0) return "Unknown";
-            return table[Math.floor(Math.random() * table.length)];
-        },
+        roll(sides) { return Q.roll(sides); },
+        rollNd(n, sides) { return Q.nd(n, sides); },
+        rollPercentile() { return Q.pct(); },
+        rollTable(table) { if (!table || !Array.isArray(table) || table.length === 0) return "Unknown"; return Q.pick(table); },
+        races: Q.RACES, classes: Q.CLASSES,
 
         rollDiceUI(n, sides) {
             const res = this.rollNd(n, sides);
@@ -514,485 +521,90 @@
             const log = document.getElementById('dice-log-text');
             if (box) { box.innerText = res; box.classList.add('bg-black','text-white'); setTimeout(()=>box.classList.remove('bg-black','text-white'),200); }
             if (mobile) { mobile.innerText = `${n}d${sides}=${res}`; }
-            if (log) log.innerText = `${n}d${sides} ⟹ ${res}`;
+            if (log) log.innerText = `${n}d${sides} = ${res}`;
         },
-
-        toggleMobileDice() {
-            const el = document.getElementById('mobile-dice');
-            el.classList.toggle('hidden');
-        },
-
+        toggleMobileDice() { document.getElementById('mobile-dice').classList.toggle('hidden'); },
         parseLevelRange(rangeStr) {
-            if (rangeStr === "1" || rangeStr === "0") return parseInt(rangeStr);
-            let parts = rangeStr.split("-");
-            let min = parseInt(parts[0]), max = parseInt(parts[1]);
-            return min + Math.floor(Math.random() * (max - min + 1));
+            const parts = String(rangeStr).split("-");
+            if (parts.length === 1) return parseInt(parts[0]);
+            return Q.rr(parseInt(parts[0]), parseInt(parts[1]));
         },
-
         showToast(msg) {
             const t = document.getElementById('toast');
-            t.innerText = msg;
-            t.style.opacity = '1';
-            t.style.pointerEvents = 'auto';
+            t.innerText = msg; t.style.opacity = '1'; t.style.pointerEvents = 'auto';
             setTimeout(() => { t.style.opacity = '0'; t.style.pointerEvents = 'none'; }, 2000);
         },
 
-        // --- BIOLOGICAL SEX ---
-        determineSex(charClass, isMenAtArms = false) {
-            if (isMenAtArms) return true;
-            if (!charClass || charClass.includes('Commoner') || charClass === '0') return this.rollPercentile() <= 50;
-            let r = this.rollPercentile();
+        // --- HOUSE RULE (not in the 1e books): class-weighted sex, used by the Name Forge option only ---
+        determineSex(charClass) {
+            if (!charClass) return Q.pct() <= 50;
             const table = { 'Cleric':80,'Druid':90,'Fighter':85,'Paladin':100,'Ranger':90,'Magic-User':65,'Illusionist':80,'Thief':85,'Assassin':95,'Monk':85 };
-            return r <= (table[charClass] || 50);
+            return Q.pct() <= (table[charClass] || 50);
         },
 
-        // --- STAT ROLLING (Methods I-IV) ---
-        rollStats(method, isGeneralNPC = false) {
-            let stats = { str:0, int:0, wis:0, dex:0, con:0, cha:0 };
-            const keys = Object.keys(stats);
-
-            if (isGeneralNPC) {
-                keys.forEach(k => {
-                    let sum = 0;
-                    for(let i=0;i<3;i++) {
-                        let r = this.roll(6);
-                        if (r===1) r=3; if (r===6) r=4;
-                        sum += r;
-                    }
-                    stats[k] = sum;
-                });
-                return stats;
-            }
-
-            if (method == 1) {
-                let pool = [];
-                for(let i=0;i<6;i++) {
-                    let r = [this.roll(6),this.roll(6),this.roll(6),this.roll(6)].sort((a,b)=>b-a);
-                    pool.push(r[0]+r[1]+r[2]);
-                }
-                return pool.sort((a,b)=>b-a);
-            } else if (method == 2) {
-                let pool = [];
-                for(let i=0;i<12;i++) pool.push(this.rollNd(3,6));
-                return pool.sort((a,b)=>b-a).slice(0,6);
-            } else if (method == 3) {
-                keys.forEach(k => {
-                    let max = 0;
-                    for(let i=0;i<6;i++) { let r=this.rollNd(3,6); if(r>max) max=r; }
-                    stats[k] = max;
-                });
-                return stats;
-            } else if (method == 4) {
-                let bestSet = null, bestSum = 0;
-                for(let s=0;s<12;s++) {
-                    let set = {str:this.rollNd(3,6),int:this.rollNd(3,6),wis:this.rollNd(3,6),dex:this.rollNd(3,6),con:this.rollNd(3,6),cha:this.rollNd(3,6)};
-                    let sum = Object.values(set).reduce((a,b)=>a+b,0);
-                    if (sum > bestSum) { bestSum=sum; bestSet=set; }
-                }
-                return bestSet;
-            }
-            // Fallback: straight 3d6
-            keys.forEach(k => stats[k] = this.rollNd(3,6));
-            return stats;
-        },
-
-        assignStats(pool, charClass) {
-            if (!Array.isArray(pool)) return pool; // already an object
-            const priorityMap = {
-                'Fighter':    ['str','con','dex','cha','wis','int'],
-                'Paladin':    ['cha','str','wis','con','dex','int'],
-                'Ranger':     ['str','int','wis','con','dex','cha'],
-                'Magic-User': ['int','dex','con','wis','cha','str'],
-                'Illusionist':['int','dex','con','cha','wis','str'],
-                'Cleric':     ['wis','con','str','cha','dex','int'],
-                'Druid':      ['wis','cha','con','dex','str','int'],
-                'Thief':      ['dex','int','con','str','cha','wis'],
-                'Assassin':   ['dex','str','int','con','cha','wis'],
-                'Monk':       ['str','wis','dex','con','cha','int'],
-            };
-            let priority = priorityMap[charClass] || ['str','con','dex','cha','wis','int'];
-            let sorted = [...pool].sort((a,b)=>b-a);
-            let stats = {};
-            priority.forEach((stat, i) => stats[stat] = sorted[i] || 9);
-            return stats;
-        },
-
-        applyClassMinimums(stats, charClass) {
-            if(charClass==='Paladin') { stats.cha=Math.max(stats.cha,17); stats.str=Math.max(stats.str,12); }
-            if(charClass==='Ranger') { stats.str=Math.max(stats.str,13); stats.int=Math.max(stats.int,13); stats.wis=Math.max(stats.wis,14); }
-            if(charClass==='Druid') { stats.wis=Math.max(stats.wis,12); stats.cha=Math.max(stats.cha,15); }
-            if(charClass==='Illusionist') { stats.int=Math.max(stats.int,15); stats.dex=Math.max(stats.dex,16); }
-            if(charClass==='Monk') { stats.str=Math.max(stats.str,15); stats.wis=Math.max(stats.wis,15); stats.dex=Math.max(stats.dex,15); stats.con=Math.max(stats.con,11); }
-            if(charClass==='Assassin') { stats.str=Math.max(stats.str,12); stats.dex=Math.max(stats.dex,12); stats.int=Math.max(stats.int,11); }
-            return stats;
-        },
-
-        applyRaceAdjustments(stats, race) {
-            if (!stats || typeof stats !== 'object' || Array.isArray(stats)) return stats;
-            if(race==='Dwarf') { stats.con+=1; stats.cha-=1; }
-            if(race==='Elf') { stats.dex+=1; stats.con-=1; }
-            if(race==='Halfling') { stats.dex+=1; stats.str-=1; }
-            if(race==='Half-orc') { stats.str+=1; stats.con+=1; stats.cha-=2; }
-            Object.keys(stats).forEach(k => { if(stats[k]>18) stats[k]=18; if(stats[k]<3) stats[k]=3; });
-            return stats;
-        },
-
-        rollHeightWeight(race, isMale) {
-            let hBase, heightMod=0, wBase, weightMod=0;
-            if(race==='Human') { hBase=isMale?72:66; wBase=isMale?175:130; }
-            else if(race==='Dwarf') { hBase=isMale?48:46; wBase=isMale?150:120; }
-            else if(race==='Elf') { hBase=isMale?60:54; wBase=isMale?100:80; }
-            else if(race==='Halfling') { hBase=isMale?36:33; wBase=isMale?60:50; }
-            else { hBase=66; wBase=150; }
-            let p=this.rollPercentile();
-            if(p<=30) heightMod=-this.roll(4);
-            else if(p>=71) heightMod=this.roll(4);
-            p=this.rollPercentile();
-            if(p<=25) weightMod=-this.roll(8);
-            else if(p>=76) weightMod=this.roll(8);
-            let finalH=Math.max(36, hBase+heightMod);
-            let finalW=Math.max(40, wBase+weightMod);
-            return `${Math.floor(finalH/12)}'${finalH%12}" / ${finalW} lbs`;
-        },
-
-        getNPCReaction() {
-            let r=this.rollPercentile();
-            if(r<=5) return "Violently hostile, immediate attack";
-            if(r<=25) return "Hostile, immediate action";
-            if(r<=45) return "Uncertain but prone negative";
-            if(r<=55) return "Neutral — uninterested";
-            if(r<=75) return "Uncertain but prone positive";
-            if(r<=95) return "Friendly, immediate action";
-            return "Enthusiastically friendly, immediate acceptance";
-        },
-
-        // FIX: rollRivalClass was missing entirely — caused crash on rival generation
-        rollRivalClass(classCounts) {
-            const maxCounts = {
-                'Cleric':2,'Druid':1,'Fighter':2,'Paladin':1,'Ranger':1,
-                'Magic-User':2,'Illusionist':1,'Thief':2,'Assassin':1,'Monk':1
-            };
-            let available = this.classes.filter(c => (classCounts[c]||0) < maxCounts[c]);
-            if (available.length === 0) available = ['Fighter','Thief','Cleric'];
-            let chosen = this.rollTable(available);
-            classCounts[chosen] = (classCounts[chosen]||0) + 1;
-            return chosen;
-        },
-
-        evaluateMagicItem(chancePerLevel, level) {
-            if (!chancePerLevel) return null;
-            let baseChance = chancePerLevel * level;
-            if (this.rollPercentile() <= baseChance) {
-                let bonus = "+1";
-                let upgradeChance = level + Math.max(0, baseChance - 90);
-                if (this.rollPercentile() <= upgradeChance) {
-                    bonus = "+2";
-                    if (this.rollPercentile() <= level) bonus = "+3";
-                }
-                return bonus;
-            }
-            return null;
-        },
-
-        generateMagicEquipment(charClass, level) {
-            let items = [];
-            if (level < 2) return ["Standard adventuring gear only"];
-
-            let protData = this.magicProtectives[charClass] || {};
-            let armors = [];
-            if (protData.plate)  armors.push({name:'Plate Mail',    c:protData.plate});
-            if (protData.banded) armors.push({name:'Banded Mail',   c:protData.banded});
-            if (protData.chain)  armors.push({name:'Chain Mail',    c:protData.chain});
-
-            if (armors.length > 0) {
-                let chosen = this.rollTable(armors);
-                let res = this.evaluateMagicItem(chosen.c, level);
-                if (res) items.push(`${res} ${chosen.name}`);
-            }
-
-            if (protData.shield)  { let r=this.evaluateMagicItem(protData.shield,level);  if(r) items.push(`${r} Shield`); }
-            if (protData.leather) { let r=this.evaluateMagicItem(protData.leather,level); if(r) items.push(`${r} Leather Armor`); }
-            if (protData.ring && this.rollPercentile()<=(protData.ring*level)) items.push('Ring of Protection +1');
-            if (protData.bracers && this.rollPercentile()<=(protData.bracers*level)) {
-                let ac=6;
-                if (this.rollPercentile()<=(level+Math.max(0,(protData.bracers*level)-90))) {
-                    ac=5; if(this.rollPercentile()<=level) ac=4;
-                }
-                items.push(`Bracers of Defense (AC ${ac})`);
-            }
-
-            let wepData = this.magicWeapons[charClass] || {};
-            let exclusives = [];
-            if (wepData.sword) exclusives.push({n:charClass==='Druid'?'Scimitar':'Sword', c:wepData.sword});
-            if (wepData.axe)   exclusives.push({n:'Battle Axe',  c:wepData.axe});
-            if (wepData.spear) exclusives.push({n:'Spear',       c:wepData.spear});
-            if (wepData.mace)  exclusives.push({n:'Mace',        c:wepData.mace});
-            if (exclusives.length > 0) {
-                let chosen = this.rollTable(exclusives);
-                let res = this.evaluateMagicItem(chosen.c, level);
-                if (res) items.push(`${res} ${chosen.n}`);
-            }
-            if (wepData.dagger) { let r=this.evaluateMagicItem(wepData.dagger,level); if(r) items.push(`${r} Dagger`); }
-            if (wepData.bow)    { let r=this.evaluateMagicItem(wepData.bow,level);    if(r) items.push(`${r} Bow`); }
-            if (wepData.bolts && this.rollPercentile()<=(wepData.bolts*level)) {
-                let plus3 = (this.rollPercentile()<=(level+Math.max(0,(wepData.bolts*level)-90)) && this.rollPercentile()<=level);
-                items.push(plus3 ? 'Crossbow of Speed & 15 +2 Bolts' : '30 +2 Bolts');
-            }
-
-            let sc = this.scrollsData[charClass];
-            if (sc && sc.chance>0 && this.rollPercentile()<=(sc.chance*level)) {
-                let scStr = "Scroll: ";
-                if (sc.prot && this.roll(2)===1) scStr += "Protection";
-                else scStr += `${this.roll(2)===1?sc.spells1:sc.spells3} Spells`;
-                items.push(scStr);
-            }
-
-            let pot = this.potionsData[charClass];
-            if (pot && pot.chance>0) {
-                let potChance = pot.chance * level;
-                let amount = potChance>=100 ? pot.max : (this.rollPercentile()<=potChance ? this.roll(pot.max) : 0);
-                for(let i=0;i<amount;i++) items.push(`Potion of ${this.rollTable(this.potionTypes)}`);
-            }
-
-            if (level >= 5) {
-                let numMisc = level>=8 ? this.roll(4) : (this.roll(3)-1);
-                for(let i=0;i<numMisc;i++) {
-                    let m = this.rollTable(this.miscItems);
-                    items.push(m);
-                }
-            }
-
-            return items.length > 0 ? items : ["Standard adventuring gear only"];
-        },
-
-        getRivalMagicItems(level) {
-            let items = [];
-            let r = this.rollPercentile();
-            const add = (tbl, qty) => { for(let i=0;i<qty;i++) items.push(this.rollTable(this.rivalMagicTables[tbl])); };
-
-            if      (level===1)        { if(r<=10) add('I',2); }
-            else if (level===2)        { if(r<=20) add('I',2); }
-            else if (level===3)        { if(r<=30) add('I',2); }
-            else if (level===4)        { if(r<=10) add('II',1); else if(r<=30) add('II',2); }
-            else if (level===5)        { if(r<=30) add('II',1); else if(r<=80) add('I',2); }
-            else if (level===6)        { if(r<=40) add('II',2); else if(r<=100) add('I',3); }
-            else if (level===7)        { if(r<=10) add('III',1); else if(r<=20) add('II',2); else if(r<=90) add('I',3); }
-            else if (level===8)        { if(r<=20) add('III',1); else if(r<=80) add('II',2); else add('I',3); }
-            else if (level===9)        { if(r<=30) add('III',1); else if(r<=90) add('II',2); else add('I',3); }
-            else if (level===10)       { if(r<=40) add('III',1); else add('I',3); }
-            else if (level===11)       { if(r<=10) add('IV',1); else if(r<=60) add('III',1); else add('II',2); }
-            else if (level>=12) {
-                add('I',3); add('II',2);
-                if(this.rollPercentile()<=60) add('III',1);
-                if(this.rollPercentile()<=20) add('IV',1);
-            }
-            return items.length > 0 ? items : ["Standard adventuring gear only"];
-        },
-
-        getSpellbook(charClass, level, stats, isRival=false) {
-            if (!charClass) return null;
-            let c = charClass.split(' ')[0];
-            let isMU    = c==='Magic-User';
-            let isIll   = c==='Illusionist';
-            let isCleric= c==='Cleric'||c==='Paladin';
-            let isDruid = c==='Druid'||c==='Ranger';
-            if (!isMU && !isIll && !isCleric && !isDruid) return null;
-
-            // --- Cleric / Paladin / Druid / Ranger ---
-            if (isCleric || isDruid) {
-                let effLevel = level;
-                if (c==='Paladin') effLevel = Math.max(0, level-8);
-                if (c==='Ranger')  effLevel = Math.max(0, level-7);
-                if (effLevel <= 0) return null;
-
-                if (!isRival && (c==='Cleric'||c==='Druid'||c==='Paladin'||c==='Ranger')) {
-                    let clLvl = Math.max(1, Math.min(7, Math.ceil(effLevel/2)));
-                    return `Standard daily prayers up to Level ${clLvl} (Wisdom bonus slots active).`;
-                }
-
-                const clericProg = [
-                    [],
-                    [1],[2],[2,1],[3,2],[3,3,1],[3,3,2],[3,3,2,1],[3,3,3,2],
-                    [4,4,3,2,1],[4,4,3,3,2],[5,4,4,3,2,1],[6,5,5,3,2,2],
-                    [6,6,6,4,2,2],[6,6,6,5,3,2],[7,7,7,5,4,2]
-                ];
-                const druidProg = [
-                    [],
-                    [2],[2,1],[3,2,1],[4,2,2],[4,3,2],[4,3,2,1],[4,4,3,1],[4,4,3,2],
-                    [5,4,3,2,1],[5,4,3,3,2],[5,5,3,3,2,1],[5,5,4,4,3,2,1],
-                    [6,5,5,5,4,3,2],[6,6,6,6,5,4,3]
-                ];
-
-                let slots = [...((c==='Cleric'||c==='Paladin') ?
-                    (clericProg[Math.min(effLevel,15)]||[]) :
-                    (druidProg [Math.min(effLevel,14)]||[]))];
-
-                // Wisdom bonus slots
-                if (c==='Cleric'||c==='Druid') {
-                    let wis = stats ? stats.wis : 9;
-                    if(slots.length>0&&wis>=13) slots[0]+=1;
-                    if(slots.length>0&&wis>=14) slots[0]+=1;
-                    if(slots.length>1&&wis>=15) slots[1]+=1;
-                    if(slots.length>1&&wis>=16) slots[1]+=1;
-                    if(slots.length>2&&wis>=17) slots[2]+=1;
-                    if(slots.length>3&&wis>=18) slots[3]+=1;
-                }
-
-                let spellData = (c==='Cleric'||c==='Paladin') ? this.clericSpells : this.druidSpells;
-                let lines = [];
-                for(let i=0;i<slots.length;i++) {
-                    if(slots[i]>0) {
-                        let picked = [];
-                        for(let s=0;s<slots[i];s++) picked.push(this.rollTable(spellData[i+1]||['Unknown']));
-                        picked.sort();
-                        lines.push(`<b>L${i+1} (${slots[i]}):</b> ${picked.join(', ')}`);
-                    }
-                }
-                return `${lines.join('<br>')} <br><span class="opacity-60 text-[9px] mt-1 block tracking-wider">(Wisdom: ${stats?stats.wis:9}, bonus slots applied)</span>`;
-            }
-
-            // --- Magic-User / Illusionist ---
-            let intScore = stats ? stats.int : 9;
-            let intStats = {chance:35,min:4,max:6};
-            if(intScore>=19) intStats={chance:95,min:10,max:99};
-            else if(intScore==18) intStats={chance:85,min:9,max:18};
-            else if(intScore==17) intStats={chance:75,min:8,max:14};
-            else if(intScore>=15) intStats={chance:65,min:7,max:11};
-            else if(intScore>=13) intStats={chance:55,min:6,max:9};
-            else if(intScore>=10) intStats={chance:45,min:5,max:7};
-
-            let maxSpellLvl = 5;
-            if(intScore>=18) maxSpellLvl=9;
-            else if(intScore>=16) maxSpellLvl=8;
-            else if(intScore>=14) maxSpellLvl=7;
-            else if(intScore>=10) maxSpellLvl=6;
-
-            let charMaxLvl = Math.max(1, Math.ceil(level/2));
-            let capLvl = Math.min(charMaxLvl, maxSpellLvl);
-            if(isIll) capLvl = Math.min(capLvl, 7);
-            if(isMU)  capLvl = Math.min(capLvl, 9);
-
-            let details = `(Know Chance: ${intStats.chance}%, Max/lvl: ${intStats.min}-${intStats.max===99?'All':intStats.max}, Max Lvl: ${isIll?Math.min(7,maxSpellLvl):maxSpellLvl})`;
-            let spellData = isIll ? this.illusionistSpells : this.muSpells;
-            let lines = [];
-
-            for(let sl=1;sl<=capLvl;sl++) {
-                let pool = (spellData[sl]||[]);
-                if(pool.length===0) continue;
-                let maxPoss = Math.min(intStats.max===99?pool.length:intStats.max, pool.length);
-                let count = intStats.max===99 ? (this.roll(10)+10) : (this.roll(maxPoss-intStats.min+1)+intStats.min-1);
-                count = Math.max(intStats.min, Math.min(count, maxPoss));
-
-                // Level 1 MUs always start with Read Magic
-                let known = (sl===1&&isMU) ? ['Read Magic'] : [];
-                let safety=0;
-                while(known.length<count && safety<200) {
-                    let s=this.rollTable(pool);
-                    if(!known.includes(s)) known.push(s);
-                    safety++;
-                }
-                known.sort();
-                lines.push(`<b>L${sl} (${known.length}):</b> ${known.join(', ')}`);
-            }
-            return `${lines.join('<br>')} <br><span class="opacity-60 text-[9px] mt-1 block tracking-wider">${details}</span>`;
-        },
-
-        calculateAC(charClass, level, equipmentList, stats) {
-            let baseClass = charClass ? charClass.split(' ')[0] : 'Commoner';
-            let baseAC=10, shieldBonus=0, ringBonus=0, bracersAC=null;
-            let hasArmor=false, hasShield=false;
-
-            for(let item of (equipmentList||[])) {
-                let magicBonus=0;
-                let m=item.match(/\+(\d+)/);
-                if(m) magicBonus=parseInt(m[1]);
-                if(item.includes("Plate Mail"))       { baseAC=3-magicBonus; hasArmor=true; }
-                else if(item.includes("Banded Mail"))  { baseAC=4-magicBonus; hasArmor=true; }
-                else if(item.includes("Chain Mail"))   { baseAC=5-magicBonus; hasArmor=true; }
-                else if(item.includes("Scale Mail"))   { baseAC=6-magicBonus; hasArmor=true; }
-                else if(item.includes("Studded Leather")||item.includes("Ring Mail")) { baseAC=7-magicBonus; hasArmor=true; }
-                else if(item.includes("Leather Armor")||item.includes("Padded Armor")){ baseAC=8-magicBonus; hasArmor=true; }
-                if(item.includes("Shield"))            { shieldBonus=1+magicBonus; hasShield=true; }
-                if(item.includes("Ring of Protection")){ ringBonus+=1; }
-                let bm=item.match(/Bracers of Defense \(AC (\d+)\)/i);
-                if(bm) bracersAC=parseInt(bm[1]);
-            }
-
-            // FIX: Only give default armor to characters who would logically be armored (kept as AC 5-8 range for unequipped)
-            if(!hasArmor) {
-                if(['Fighter','Paladin'].includes(baseClass))       baseAC=5;
-                else if(['Cleric','Ranger'].includes(baseClass))    baseAC=6;
-                else if(['Druid','Thief','Assassin'].includes(baseClass)) baseAC=8;
-                else if(['Monk'].includes(baseClass))               baseAC=Math.max(10-Math.floor(level/3),2);
-                // MU, Illusionist, Commoner stay at 10
-            }
-            if(!hasShield) {
-                if(['Fighter','Paladin','Cleric'].includes(baseClass)) shieldBonus=1;
-            }
-
-            let finalAC = baseAC - shieldBonus - ringBonus;
-            if(bracersAC!==null) finalAC=Math.min(finalAC, bracersAC-shieldBonus-ringBonus);
-
-            if(stats&&stats.dex) {
-                if(stats.dex===15) finalAC-=1;
-                if(stats.dex===16) finalAC-=2;
-                if(stats.dex===17) finalAC-=3;
-                if(stats.dex>=18)  finalAC-=4;
-            }
-            return finalAC;
-        },
+        statCell(k, v) { return `<div class="border border-black p-1 text-center bg-white flex flex-col justify-center"><div class="font-label text-[8px] uppercase font-bold">${k.toUpperCase()}</div><div class="font-mono font-bold text-base leading-none">${v}</div></div>`; },
 
         buildCardHTML(charData) {
-            let statGrid = "";
-            if (charData.stats && typeof charData.stats==='object' && !Array.isArray(charData.stats)) {
-                statGrid = Object.entries(charData.stats).map(([k,v]) => `
-                    <div class="border border-black p-1 text-center bg-white flex flex-col justify-center">
-                        <div class="font-label text-[8px] uppercase font-bold">${k.toUpperCase()}</div>
-                        <div class="font-mono font-bold text-base leading-none">${v}</div>
-                    </div>`).join('');
-            }
-
-            let bottomSection = "";
-            if(charData.type==='PC' || charData.type.includes('Rival')) {
-                bottomSection = `<p class="font-body text-[11px] leading-snug mb-2 z-10 relative"><b>Equip:</b> ${(charData.equipment||[]).join(', ').toUpperCase()}</p>`;
-                if(charData.spells) bottomSection += `
+            const hasStats = charData.stats && typeof charData.stats==='object' && !Array.isArray(charData.stats);
+            const shown = charData.statsText || charData.stats;
+            let statGrid = hasStats ? Q.AB.map(k => this.statCell(k, shown[k])).join('') : "";
+            const spellBox = charData.spells ? `
                     <details class="font-body text-[11px] leading-snug mb-4 z-10 relative group bg-surface-container-low p-2 border-2 border-black/10">
-                        <summary class="font-bold cursor-pointer outline-none hover:text-black/60 select-none">Grimoire & Prayers ▾</summary>
+                        <summary class="font-bold cursor-pointer outline-none hover:text-black/60 select-none">Spells &amp; Prayers &#9662;</summary>
                         <div class="pt-2 mt-2 border-t-2 border-black/10 space-y-1">${charData.spells}</div>
-                    </details>`;
-            } else if(charData.type==='NPC') {
-                bottomSection = `<p class="font-body text-[11px] italic line-clamp-3 mb-4 z-10 relative">Disposition: ${charData.traits.disposition}. Tendency: ${charData.traits.tendency}. Reaction: ${charData.reaction.toLowerCase()}.</p>`;
-                if(charData.spells) bottomSection += `
-                    <details class="font-body text-[11px] leading-snug mt-2 z-10 relative group bg-surface-container-low p-2 border-2 border-black/10">
-                        <summary class="font-bold cursor-pointer outline-none hover:text-black/60 select-none">Grimoire & Prayers ▾</summary>
-                        <div class="pt-2 mt-2 border-t-2 border-black/10 space-y-1">${charData.spells}</div>
-                    </details>`;
-            } else if(charData.type==='Name') {
+                    </details>` : '';
+            let bottomSection = "";
+            if (charData.type==='PC' || charData.type.includes('Rival')) {
+                bottomSection = `<p class="font-body text-[11px] leading-snug mb-2 z-10 relative"><b>Equip:</b> ${(charData.equipment||[]).join(', ')}</p>`;
+                if (charData.skills) bottomSection += `<p class="font-body text-[11px] leading-snug mb-2 z-10 relative"><b>Thief skills:</b> ${charData.skills}</p>`;
+                bottomSection += spellBox;
+            } else if (charData.type==='NPC') {
+                const t = charData.traits;
+                bottomSection = `<p class="font-body text-[11px] leading-snug mb-2 z-10 relative"><b>Look:</b> ${t.age}, ${t.appearance}; ${charData.hw}. Possessions ${t.possessions}.<br><b>Tendencies:</b> ${t.tendencies}. <b>Personality:</b> ${t.personality}, ${t.disposition}. <b>Intellect:</b> ${t.intellect}. Sanity ${t.sanity}.<br><b>Nature:</b> ${t.nature}. <b>Honesty:</b> ${t.honesty}. <b>Bravery:</b> ${t.bravery}. <b>Morals:</b> ${t.morals}. <b>Piety:</b> ${t.piety}. <b>Interest:</b> ${t.interest}.<br><b>Reaction:</b> ${charData.reaction}.</p>`;
+                if (charData.equipment && charData.equipment.length) bottomSection += `<p class="font-body text-[11px] mb-2 z-10 relative"><b>Equip:</b> ${charData.equipment.join(', ')}</p>`;
+                if (charData.skills) bottomSection += `<p class="font-body text-[11px] leading-snug mb-2 z-10 relative"><b>Thief skills:</b> ${charData.skills}</p>`;
+                bottomSection += spellBox;
+            } else if (charData.type==='Name') {
                 bottomSection = `<p class="font-mono text-[9px] text-black/60 uppercase z-10 relative"><b>Rolls:</b> ${charData.rolls}</p>`;
             }
-
+            const lvl = charData.levelText !== undefined ? charData.levelText : charData.level;
+            const hpTxt = charData.hp !== undefined ? charData.hp : null;
+            const plain = s => String(s||'').replace(/<br>/g,'\n').replace(/<[^>]*>?/gm,'');
             let copyRaw = `${charData.name} (${charData.type})\n`;
-            if(charData.stats && typeof charData.stats==='object' && !Array.isArray(charData.stats)) {
-                copyRaw += `Class: ${charData.charClass}${charData.level>0?' (Lvl '+charData.level+')':''} | AC: ${charData.ac}\n`;
+            if (hasStats) {
+                copyRaw += `Class: ${charData.charClass} (Lvl ${lvl}) | AC: ${charData.ac} | HP: ${hpTxt}\n`;
                 copyRaw += `Race: ${charData.race} | Sex: ${charData.gender} | Align: ${charData.align||'-'}\n`;
-                copyRaw += `STR:${charData.stats.str} INT:${charData.stats.int} WIS:${charData.stats.wis} DEX:${charData.stats.dex} CON:${charData.stats.con} CHA:${charData.stats.cha}\n`;
-            } else {
+                copyRaw += `STR:${shown.str} INT:${shown.int} WIS:${shown.wis} DEX:${shown.dex} CON:${shown.con} CHA:${shown.cha}\n`;
+            } else if (charData.type === 'Name') {
                 copyRaw += `Origin: ${charData.race} | Sex: ${charData.gender} | Class Mod: ${charData.charClass||'None'}\n`;
+            } else {
+                copyRaw += `${charData.charClass} | ${charData.race} | Sex: ${charData.gender} | AC: ${charData.ac} | HP: ${hpTxt}\n`;
             }
-            if(charData.equipment) copyRaw += `Equipment: ${charData.equipment.join(', ')}\n`;
-            if(charData.spells) copyRaw += `Spells:\n${charData.spells.replace(/<br>/g,'\n').replace(/<[^>]*>?/gm,'')}\n`;
-            if(charData.traits) {
-                copyRaw += `Persona: ${charData.traits.age}, ${charData.traits.general}. Sanity: ${charData.traits.sanity}.\n`;
-                copyRaw += `Traits: ${charData.traits.disposition}, ${charData.traits.tendency}. Intellect: ${charData.traits.intellect}.\n`;
-                copyRaw += `Morals: ${charData.traits.morals}. Piety: ${charData.traits.piety}. Bravery: ${charData.traits.bravery}.\n`;
-                copyRaw += `Interests: ${charData.traits.interest}.\n`;
-                copyRaw += `Reaction: ${charData.reaction}\n`;
-            }
-            if(charData.rolls) copyRaw += `Rolls: ${charData.rolls}\n`;
-
+            if (charData.xp !== undefined) copyRaw += `XP: ${charData.xp} | ${charData.titles||''}\n`;
+            if (charData.equipment) copyRaw += `Equipment: ${charData.equipment.join(', ')}\n`;
+            if (charData.skills) copyRaw += `Thief skills: ${charData.skills}\n`;
+            if (charData.spells) copyRaw += `Spells:\n${plain(charData.spells)}\n`;
+            if (charData.traits) { const t = charData.traits;
+                copyRaw += `Appearance: ${t.age}, ${t.appearance}; ${charData.hw}. Possessions: ${t.possessions}.\nTendencies: ${t.tendencies}. Personality: ${t.personality}, ${t.disposition}. Intellect: ${t.intellect}. Sanity: ${t.sanity}.\nNature: ${t.nature}. Materialism: ${t.materialism}. Honesty: ${t.honesty}. Bravery: ${t.bravery}. Energy: ${t.energy}. Thrift: ${t.thrift}.\nMorals: ${t.morals}. Piety: ${t.piety}. Interest: ${t.interest}.\nReaction: ${charData.reaction}\n`; }
+            if (charData.rolls) copyRaw += `Rolls: ${charData.rolls}\n`;
             let safeCopy = copyRaw.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
             let idAttr = charData.id || `C-${Math.floor(Math.random()*99999)}`;
-
+            const row = (a,b,last) => `<div class="flex justify-between ${last?'':'border-b border-black/20 pb-1 mb-1'}"><span class="font-label text-[10px] font-bold uppercase">${a}</span><span class="font-mono text-[10px]">${b}</span></div>`;
+            const panel = hasStats ? `
+                <div class="bg-surface-container-highest p-3 border-2 border-black mb-4 z-10 relative">
+                    ${row('Class / Lvl', `${charData.charClass} (${lvl})`)}
+                    ${row('Race / Sex', `${charData.race} (${charData.gender.charAt(0)})`)}
+                    ${row('Alignment', charData.align||'-')}
+                    ${row('HP / AC', `${hpTxt} / ${charData.ac}`)}
+                    ${row('XP', `${charData.xp !== undefined ? Number(charData.xp).toLocaleString() : '-'}${charData.titles ? ' · ' + charData.titles : ''}`, true)}
+                </div>
+                <div class="grid grid-cols-6 gap-1 mb-4 z-10 relative">${statGrid}</div>` : charData.type === 'Name' ? `
+                <div class="bg-surface-container-highest p-3 border-2 border-black mb-4 z-10 relative">
+                    ${row('Origin', charData.race)}${row('Sex', charData.gender)}${row('Class Mod', charData.charClass||'None', true)}
+                </div>` : `
+                <div class="bg-surface-container-highest p-3 border-2 border-black mb-4 z-10 relative">
+                    ${row('Class', charData.charClass)}${row('Race / Sex', `${charData.race} (${charData.gender.charAt(0)})`)}${row('HP / AC', `${hpTxt} / ${charData.ac}`, true)}
+                </div>`;
             return `
             <div class="border-r-2 border-b-2 border-black p-6 relative overflow-hidden bg-white group hover:bg-surface-container-low transition-colors duration-0" id="${idAttr}">
                 <button onclick="app.copyTextFromCard('${idAttr}')" class="absolute top-4 right-4 p-1.5 bg-white border-2 border-black opacity-0 group-hover:opacity-100 z-20 hover:bg-black hover:text-white" title="Copy">
@@ -1005,42 +617,7 @@
                         <h3 class="font-headline font-bold text-2xl uppercase mt-1 leading-tight">${charData.name}</h3>
                     </div>
                 </div>
-                ${charData.stats && typeof charData.stats==='object' && !Array.isArray(charData.stats) ? `
-                <div class="bg-surface-container-highest p-3 border-2 border-black mb-4 z-10 relative">
-                    <div class="flex justify-between border-b border-black/20 pb-1 mb-1">
-                        <span class="font-label text-[10px] font-bold uppercase">Class / Lvl</span>
-                        <span class="font-mono text-[10px]">${charData.charClass}${charData.level>0?' ('+charData.level+')':''}</span>
-                    </div>
-                    <div class="flex justify-between border-b border-black/20 pb-1 mb-1">
-                        <span class="font-label text-[10px] font-bold uppercase">Race / Sex</span>
-                        <span class="font-mono text-[10px]">${charData.race} (${charData.gender.charAt(0)})</span>
-                    </div>
-                    <div class="flex justify-between border-b border-black/20 pb-1 mb-1">
-                        <span class="font-label text-[10px] font-bold uppercase">Alignment</span>
-                        <span class="font-mono text-[10px]">${charData.align||'—'}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="font-label text-[10px] font-bold uppercase">Armor Class</span>
-                        <span class="font-mono text-[10px] font-bold">${charData.ac}</span>
-                    </div>
-                </div>
-                <div class="grid grid-cols-6 gap-1 mb-4 z-10 relative">${statGrid}</div>
-                ` : `
-                <div class="bg-surface-container-highest p-3 border-2 border-black mb-4 z-10 relative">
-                    <div class="flex justify-between border-b border-black/20 pb-1 mb-1">
-                        <span class="font-label text-[10px] font-bold uppercase">Origin</span>
-                        <span class="font-mono text-[10px]">${charData.race}</span>
-                    </div>
-                    <div class="flex justify-between border-b border-black/20 pb-1 mb-1">
-                        <span class="font-label text-[10px] font-bold uppercase">Sex</span>
-                        <span class="font-mono text-[10px]">${charData.gender}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="font-label text-[10px] font-bold uppercase">Class Mod</span>
-                        <span class="font-mono text-[10px]">${charData.charClass||'None'}</span>
-                    </div>
-                </div>
-                `}
+                ${panel}
                 ${bottomSection}
                 <div class="absolute bottom-0 right-0 w-16 h-16 hatched-border opacity-20 pointer-events-none"></div>
             </div>`;
@@ -1061,139 +638,9 @@
             this.showToast('Copied to clipboard!');
         },
 
-        // =====================================================================
-        // DATA TABLES
-        // =====================================================================
+        newId(prefix) { return `${prefix}-${String(Math.floor(Math.random()*99999)).padStart(5,'0')}`; },
 
-        classes: ['Cleric','Druid','Fighter','Paladin','Ranger','Magic-User','Illusionist','Thief','Assassin','Monk'],
-        races:   ['Human','Dwarf','Elf','Gnome','Half-elf','Halfling','Half-orc'],
-        classRaces: {
-            'Cleric':    ['Human','Half-elf','Half-orc'],
-            'Druid':     ['Human','Half-elf'],
-            'Fighter':   ['Human','Dwarf','Elf','Gnome','Half-elf','Halfling','Half-orc'],
-            'Paladin':   ['Human'],
-            'Ranger':    ['Human','Half-elf'],
-            'Magic-User':['Human','Elf','Half-elf'],
-            'Illusionist':['Human','Gnome'],
-            'Thief':     ['Human','Dwarf','Elf','Gnome','Half-elf','Halfling','Half-orc'],
-            'Assassin':  ['Human','Half-elf','Half-orc'],
-            'Monk':      ['Human']
-        },
-
-        // --- NPC PERSONALITY TABLES (AD&D 1e DMG App. B) ---
-        npcAlignments:  ['Lawful Good','Neutral Good','Chaotic Good','Lawful Neutral','True Neutral','Chaotic Neutral','Lawful Evil','Neutral Evil','Chaotic Evil'],
-        npcAge:         ['young adult','youthful','middle-aged','mature','old','venerable'],
-        npcGeneral:     ['cautious and methodical','bold and impulsive','friendly and open','aloof and distant','cheerful and optimistic','melancholy and brooding','nervous and anxious','confident and assured','suspicious and guarded','trusting and naive','aggressive and confrontational','passive and yielding'],
-        npcSanity:      ['stable','neurotic','eccentric','phobic','paranoid','obsessive','stable','stable','stable','stable'],
-        npcTendencies:  ['greedy','generous','cowardly','brave','honest','deceitful','lazy','industrious','curious','apathetic','vengeful','forgiving'],
-        npcDisposition: ['amiable','hostile','reserved','gregarious','cautious','reckless','humble','arrogant','earnest','sardonic','warm','cold'],
-        npcIntellect:   ['dull-witted','simple-minded','average','keen-minded','sharp-witted','learned','brilliant','cunning','scholarly','wise beyond their years'],
-        npcNature:      ['introverted','extroverted','ambivert'],
-        npcHonesty:     ['scrupulously truthful','mostly honest','selectively truthful','habitually deceptive'],
-        npcBravery:     ['utterly cowardly','cautious and wary','averagely courageous','bold','reckless','genuinely fearless'],
-        npcMorals:      ['saintly','virtuous','morally flexible','ethically neutral','corrupt','thoroughly depraved'],
-        npcPiety:       ['devoutly faithful','observant believer','nominally religious','quietly agnostic','openly skeptical','heretical'],
-        npcEnergy:      ['lethargic','sluggish','average energy','energetic','driven','manic'],
-        npcInterests:   ['treasure and wealth','power and influence','forbidden knowledge','adventure and glory','religious devotion','family and kin','collecting rare items','fine craftsmanship','political scheming','sheer survival'],
-        npcCollections: ['weapons and armor','rare books','ancient coins','precious gems','old maps','forgotten artifacts','monster trophies','fine paintings','strange relics','exotic foods'],
-        npcPossessions: ['destitute (nothing)','poor (a few coins)','modest (common gear)','comfortable (good gear & coin)','wealthy (fine gear & savings)','rich (exceptional equipment)'],
-
-        // --- SPELL LISTS (AD&D 1e PHB) ---
-        clericSpells: {
-            1: ['Bless','Command','Create Water','Cure Light Wounds','Detect Evil','Detect Magic','Light','Protection From Evil','Purify Food & Drink','Remove Fear','Resist Cold','Sanctuary'],
-            2: ['Augury','Chant','Detect Charm','Find Traps','Hold Person','Know Alignment','Resist Fire','Silence 15\' Radius','Slow Poison','Snake Charm','Speak With Animals','Spiritual Hammer'],
-            3: ['Animate Dead','Continual Light','Create Food & Water','Cure Blindness','Cure Disease','Dispel Magic','Feign Death','Glyph of Warding','Locate Object','Prayer','Remove Curse','Speak With Dead'],
-            4: ['Cure Serious Wounds','Detect Lie','Divination','Exorcise','Lower Water','Neutralize Poison','Protection From Evil 10\' R.','Speak With Plants','Sticks to Snakes','Tongues'],
-            5: ['Atonement','Commune','Cure Critical Wounds','Dispel Evil','Flame Strike','Insect Plague','Plane Shift','Quest','Raise Dead','True Seeing'],
-            6: ['Animate Object','Blade Barrier','Conjure Animals','Find the Path','Heal','Speak With Monsters','Stone Tell','Word of Recall'],
-            7: ['Astral Spell','Control Weather','Earthquake','Gate','Holy Word','Regenerate','Restoration','Resurrection','Symbol','Wind Walk']
-        },
-        druidSpells: {
-            1: ['Animal Friendship','Detect Magic','Detect Snares & Pits','Entangle','Faerie Fire','Invisibility to Animals','Locate Animals','Pass Without Trace','Predict Weather','Purify Water','Shillelagh','Speak With Animals'],
-            2: ['Barkskin','Charm Person or Mammal','Create Water','Cure Light Wounds','Feign Death','Fire Trap','Heat Metal','Locate Plants','Obscurement','Produce Flame','Warp Wood','Wither'],
-            3: ['Call Lightning','Cure Disease','Hold Animal','Neutralize Poison','Plant Growth','Protection From Fire','Pyrotechnics','Stone Shape','Summon Insects','Tree','Water Breathing'],
-            4: ['Animal Summoning I','Call Woodland Beings','Control Temperature','Cure Serious Wounds','Dispel Magic','Hallucinatory Forest','Hold Plant','Plant Door','Produce Fire','Repel Insects'],
-            5: ['Animal Growth','Animal Summoning II','Anti-Plant Shell','Commune With Nature','Control Winds','Insect Plague','Pass Plant','Sticks to Snakes','Transmute Rock to Mud','Wall of Fire'],
-            6: ['Animal Summoning III','Anti-Animal Shell','Conjure Fire Elemental','Cure Critical Wounds','Fire Seeds','Liveoak','Transmute Water to Dust','Transport Via Plants','Turn Wood','Wall of Thorns','Weather Summoning'],
-            7: ['Animate Rock','Chariot of Sustarre','Confusion','Conjure Earth Elemental','Control Weather','Creeping Doom','Finger of Death','Fire Storm','Reincarnate','Transmute Metal to Wood']
-        },
-        muSpells: {
-            1: ['Affect Normal Fires','Burning Hands','Charm Person','Comprehend Languages','Dancing Lights','Detect Magic','Enlarge','Erase','Feather Fall','Find Familiar','Friends','Hold Portal','Identify','Jump','Light','Magic Missile','Mending','Message','Protection From Evil','Push','Read Magic','Shield','Shocking Grasp','Sleep','Spider Climb','Unseen Servant','Ventriloquism','Write'],
-            2: ['Audible Glamer','Continual Light','Darkness 15\' Radius','Detect Evil','Detect Invisibility','ESP','Flaming Sphere','Forget','Invisibility','Knock','Levitate','Locate Object','Magic Mouth','Mirror Image','Pyrotechnics','Ray of Enfeeblement','Rope Trick','Scare','Shatter','Stinking Cloud','Strength','Web','Wizard Lock'],
-            3: ['Blink','Clairaudience','Clairvoyance','Dispel Magic','Explosive Runes','Feign Death','Fireball','Fly','Gust of Wind','Haste','Hold Person','Infravision','Invisibility 10\' Radius','Lightning Bolt','Monster Summoning I','Phantasmal Force','Protection From Evil 10\' R.','Slow','Suggestion','Tongues','Water Breathing'],
-            4: ['Charm Monster','Confusion','Dig','Dimension Door','Enchanted Weapon','Extension I','Fear','Fire Shield','Fire Trap','Fumble','Hallucinatory Terrain','Ice Storm','Massmorph','Minor Globe of Invulnerability','Monster Summoning II','Plant Growth','Polymorph Other','Polymorph Self','Remove Curse','Wizard Eye'],
-            5: ['Animal Growth','Animate Dead','Cloudkill','Cone of Cold','Contact Other Plane','Extension II','Feeblemind','Hold Monster','Magic Jar','Monster Summoning III','Passwall','Telekinesis','Teleport','Transmute Rock to Mud','Wall of Force','Wall of Iron','Wall of Stone'],
-            6: ['Control Weather','Death Spell','Disintegrate','Enchant an Item','Extension III','Geas','Globe of Invulnerability','Guards and Wards','Invisible Stalker','Legend Lore','Lower Water','Monster Summoning IV','Move Earth','Otiluke\'s Freezing Sphere','Part Water','Project Image','Reincarnation','Repulsion','Stone to Flesh'],
-            7: ['Bigby\'s Grasping Hand','Cacodemon','Charm Plants','Delayed Blast Fireball','Drawmij\'s Instant Summons','Duo-Dimension','Limited Wish','Mass Invisibility','Monster Summoning V','Mordenkainen\'s Sword','Phase Door','Power Word Stun','Reverse Gravity','Simulacrum','Vanish'],
-            8: ['Antipathy/Sympathy','Bigby\'s Clenched Fist','Clone','Glassteel','Incendiary Cloud','Mass Charm','Maze','Mind Blank','Monster Summoning VI','Otto\'s Irresistible Dance','Permanency','Polymorph Any Object','Power Word Blind','Symbol','Trap the Soul'],
-            9: ['Astral Spell','Bigby\'s Crushing Hand','Gate','Imprisonment','Meteor Swarm','Monster Summoning VII','Mordenkainen\'s Disjunction','Power Word Kill','Prismatic Sphere','Shape Change','Temporal Stasis','Time Stop','Wish']
-        },
-        illusionistSpells: {
-            1: ['Audible Glamer','Change Self','Color Spray','Dancing Lights','Darkness','Detect Illusion','Detect Invisibility','Gaze Reflection','Hypnotism','Light','Phantasmal Force','Wall of Fog'],
-            2: ['Blindness','Blur','Deafness','Detect Magic','Fog Cloud','Hypnotic Pattern','Improved Phantasmal Force','Invisibility','Magic Mouth','Mirror Image','Misdirection','Ventriloquism'],
-            3: ['Continual Darkness','Continual Light','Dispel Illusion','Fear','Hallucinatory Terrain','Illusionary Script','Invisibility 10\' Radius','Non-detection','Paralyzation','Rope Trick','Spectral Force','Suggestion'],
-            4: ['Confusion','Dispel Exhaustion','Emotion','Improved Invisibility','Massmorph','Minor Creation','Phantasmal Killer','Shadow Monsters'],
-            5: ['Chaos','Demi-Shadow Monsters','Major Creation','Maze','Projected Image','Shadow Door','Shadow Magic','Summon Shadow'],
-            6: ['Conjure Animals','Demi-Shadow Magic','Mass Suggestion','Permanent Illusion','Programmed Illusion','Shades','True Sight','Veil'],
-            7: ['Alter Reality','Astral Spell','Prismatic Spray','Prismatic Wall','Vision','First Level Magic-User Spells']
-        },
-
-        // --- MAGIC ITEM TABLES ---
-        // Values = % chance per level to receive a magical version
-        magicProtectives: {
-            'Fighter':    { plate:5,  shield:5,  ring:1 },
-            'Paladin':    { plate:6,  shield:6,  ring:1 },
-            'Ranger':     { chain:4,  shield:3,  ring:1 },
-            'Cleric':     { plate:4,  shield:5,  ring:1 },
-            'Druid':      { leather:3, ring:2, bracers:1 },
-            'Magic-User': { bracers:3, ring:2 },
-            'Illusionist':{ bracers:3, ring:2 },
-            'Thief':      { leather:4, ring:2 },
-            'Assassin':   { leather:3, chain:2, ring:1 },
-            'Monk':       { ring:2 }
-        },
-        magicWeapons: {
-            'Fighter':    { sword:5, axe:3, spear:2, bow:2 },
-            'Paladin':    { sword:6, mace:3 },
-            'Ranger':     { sword:4, bow:4, spear:2 },
-            'Cleric':     { mace:4 },
-            'Druid':      { sword:3, spear:2 },
-            'Magic-User': { dagger:3 },
-            'Illusionist':{ dagger:3 },
-            'Thief':      { dagger:4, sword:3 },
-            'Assassin':   { dagger:5, sword:3 },
-            'Monk':       {}
-        },
-        scrollsData: {
-            'Magic-User': { chance:4, prot:true, spells1:2, spells3:4 },
-            'Illusionist':{ chance:3, prot:true, spells1:1, spells3:3 },
-            'Cleric':     { chance:3, prot:true, spells1:1, spells3:2 },
-            'Druid':      { chance:2, prot:false, spells1:1, spells3:2 }
-        },
-        potionsData: {
-            'Fighter':    { chance:5, max:2 },
-            'Paladin':    { chance:6, max:2 },
-            'Ranger':     { chance:4, max:2 },
-            'Cleric':     { chance:4, max:2 },
-            'Druid':      { chance:3, max:1 },
-            'Magic-User': { chance:4, max:2 },
-            'Illusionist':{ chance:3, max:2 },
-            'Thief':      { chance:4, max:2 },
-            'Assassin':   { chance:4, max:2 },
-            'Monk':       { chance:3, max:1 }
-        },
-        potionTypes: ['Healing','Extra-Healing','Heroism','Super-Heroism','Speed','Fire Resistance','Cold Resistance','Invisibility','Levitation','Flying','Clairaudience','Clairvoyance','Gaseous Form','Diminution','Giant Strength','Hill Giant Strength','Stone Giant Strength','Polymorph Self','Longevity','Treasure Finding','Plant Control','Animal Control','Undead Control','Invulnerability','ESP','Climbing','Elasticity','Etherealness','Oil of Slipperiness','Oil of Etherealness','Philter of Love','Philter of Persuasiveness','Delusion'],
-        miscItems: ['Rope of Climbing','Bag of Holding (1,000 lbs.)','Boots of Elvenkind','Cloak of Elvenkind','Necklace of Adaptation','Helm of Comprehend Languages','Gloves of Swimming & Climbing','Ring of Feather Falling','Ring of Free Action','Ring of Warmth','Ring of Jumping','Boots of Speed','Boots of Striding & Springing','Cloak of Protection +1','Cloak of Protection +2','Medallion of ESP (30\' Range)','Amulet of Proof Against Detection','Gauntlets of Ogre Power','Girdle of Giant Strength','Ioun Stone (clear spindle)','Ioun Stone (dark blue rhomboid)','Horn of Blasting','Dust of Disappearance','Robe of Useful Items (7d6 patches)','Hat of Disguise','Eyes of the Eagle','Eyes of Charming','Periapt of Health','Periapt of Wound Closure','Stone of Good Luck','Javelin of Lightning','Javelin of Piercing','Ring of Invisibility','Bag of Tricks','Portable Hole','Folding Boat','Decanter of Endless Water','Alchemy Jug','Chime of Opening','Crystal Ball','Gem of Seeing','Arrow of Direction','Boots of the North','Helm of Telepathy','Phylactery of Faithfulness','Scarab of Protection','Lyre of Building','Drums of Panic','Eversmoking Bottle','Horseshoes of Speed'],
-
-        // --- RIVAL PARTY MAGIC ITEM TABLES (App. C) ---
-        rivalMagicTables: {
-            'I':  ['+1 Sword','+1 Shield','+1 Armor','+1 Dagger','Potion of Healing','Potion of Heroism','Scroll (1 Spell)','Ring of Protection +1','Elven Cloak','Elven Boots','+1 Arrows (12)','+1 Mace','Potion of Extra-Healing','Ring of Feather Falling','Dust of Disappearance'],
-            'II': ['+2 Sword','+1 Plate Mail','+2 Shield','Ring of Protection +2','Wand of Magic Missiles (20 ch.)','Potion of Flying','Scroll (2-4 Spells)','Staff of Striking','+2 Armor','Crossbow of Speed','Potion of Invulnerability','Cloak of Protection +2','+2 Dagger','Wand of Fear (15 ch.)','Boots of Speed'],
-            'III':['+3 Sword','Sword of Dancing','+2 Plate Mail & +2 Shield','Ring of Fire Resistance','Wand of Fireballs (20 ch.)','Bag of Holding','Crystal Ball','Cloak of Displacement','+3 Arrows (20)','Girdle of Giant Strength','Staff of Healing','Ring of Spell Storing','Necklace of Missiles','Rod of Cancellation','Medallion of ESP (60\' Range)'],
-            'IV': ['Vorpal Sword','Holy Avenger (+5, +10 vs. Evil)','Staff of the Magi','Robe of the Archmagi','Sphere of Annihilation','Tome of Clear Thought','Manual of Bodily Health','Ioun Stones (set of 3)','Hammer of Thunderbolts','Ring of Three Wishes','Sword of Sharpness','Ring of Regeneration','Wand of Orcus','Amulet of the Planes','Cubic Gate']
-        },
-
-        // --- APP. N NAME GENERATOR TABLES ---
+                // --- APP. N NAME GENERATOR TABLES ---
         appN: {
             1: { o:'Fra,Brei,Hro,Sve,Tho,Hju,Sku,Gna,Halr,Orme,Ulfa,Bra,Bjor,Varg,Gunna,Hrolf,Skald,Ingva,Conn,Ulf'.split(','), l:'lo,rei,mu,ga,vi,no,si,ri,ar,ur,el,en,ald,orm,val,ulf,bra,vik,orn,gal'.split(','), c:'gar,mund,rik,helm,mar,olf,bern,frid,var,rek,nd,ar,stein,brand,wolf,hard,wald,inn,vik,orm'.split(',') },
             2: { o:'Vel,Rae,Shae,Bri,Hilde,Sigre,Gytha,Astri,More,Freya,Inge,Ravne,Flora,Gwyn,Bera,Morg,Thyri,Ragna,Alfhi,Llo'.split(','), l:'na,va,li,da,ga,ri,ni,ra,ve,ste,go,le,hil,sig,fre,run,bri,gyr,wyn,mor'.split(','), c:'a,wyn,dis,vor,ny,dith,run,frid,ar,wen,na,ild,hild,borg,rida,gerd,laug,wald,bott,thrud'.split(',') },
@@ -1222,10 +669,8 @@
             rngD:  'foot,shadow,walker,warden,arm,blade,hand,eye,heart,bow,stride,call,watch,path,track,mark,run,scout,ward,guard,song,voice,sight,touch,step,bound,claw,fang,talon,wing,feather,hide,breath,tooth,reach,grasp,grip,shot,draw,stalk,creep,prowl,lope,spring,ghost,shade,drift,glide,slip,hush,whisper,shriek,keen,fleet,true,sure,cloak,mantle,veil,shroud,hood,brand,fire,smoke,ember,frost,gale,rain,mist,fog,stone,rock,cliff,peak,vale,dell,fen,fell,grim,steel,iron,swift,lean,still,wild,bright,dark,grey,sharp,stark,gaunt,spare,bough,thorn,mount,lone,deep,far,near'.split(',')
         },
 
-        // =====================================================================
-        // NAME GENERATION
-        // =====================================================================
-        generateNameDetailed(race, charClass, isMale, specificOrigin=null) {
+
+                generateNameDetailed(race, charClass, isMale, specificOrigin=null) {
             let tIdx=1, actualRace=race;
             if(race==='Random'||!race) actualRace=this.rollTable(this.races);
             if(specificOrigin==='Human (Northern)') tIdx=isMale?1:2;
@@ -1290,104 +735,52 @@
             return this.generateNameDetailed(race, charClass, isMale).full;
         },
 
+
         // =====================================================================
-        // GENERATORS
+        // GENERATORS (rules live in rules.js)
         // =====================================================================
         generatePCs() {
             const count = Math.min(8, Math.max(1, parseInt(document.getElementById('pcCount').value)||4));
             const levelRange = document.getElementById('pcLevelRange').value;
             const method = document.querySelector('input[name="pcMethod"]:checked').value;
+            const alignMode = document.getElementById('pcAlign').value;
             const out = document.getElementById('pc-output');
             out.innerHTML = '';
-
-            for(let i=0;i<count;i++) {
-                let level = this.parseLevelRange(levelRange);
-                let charClass = this.rollTable(this.classes);
-                let race = this.rollTable(this.classRaces[charClass]);
-                let isMale = this.determineSex(charClass);
-
-                let pool = this.rollStats(method);
-                let stats = this.assignStats(pool, charClass);
-                stats = this.applyClassMinimums(stats, charClass);
-                stats = this.applyRaceAdjustments(stats, race);
-
-                let magicItems = this.generateMagicEquipment(charClass, level);
-                let align = this.rollTable(this.npcAlignments);
-                let ac = this.calculateAC(charClass, level, magicItems, stats);
-                let spells = this.getSpellbook(charClass, level, stats, false);
-                let idNum = String(Math.floor(Math.random()*99999)).padStart(5,'0');
-
-                let pc = {
-                    type:'PC', name:this.generateName(race,charClass,isMale), race, charClass, level,
-                    stats, equipment:magicItems, spells, align, gender:isMale?'Male':'Female',
-                    id:`PC-${idNum}`, badge:'PLAYER CHARACTER', ac
-                };
+            const lr = levelRange.includes('-') ? levelRange.split('-').map(Number) : parseInt(levelRange);
+            const party = Q.genPCParty({ count, levelRange: lr, method, alignMode });
+            party.chars.forEach(c => {
+                const isMale = c.gender === 'Male';
+                const pc = Object.assign(c, { type:'PC', name:this.generateName(c.race, c.classes[0], isMale), id:this.newId('PC'), badge:'PLAYER CHARACTER' });
                 this.roster.push(pc);
                 out.insertAdjacentHTML('beforeend', this.buildCardHTML(pc));
-            }
+            });
+            const note = party.alignSet ? `Party alignments (DMG App. P): ${party.alignSet.join(', ')}.` : 'Alignments unrestricted.';
+            out.insertAdjacentHTML('beforeend', `<div class="border-r-2 border-b-2 border-black p-6 bg-surface-container-low font-body text-[11px] leading-snug"><b>Party notes</b><br>${note}<br>${party.misc.length ? 'Miscellaneous items (DMG App. P) carried by the party: ' + party.misc.join('; ') + '.' : 'No miscellaneous items (party average level 5th or lower).'}</div>`);
             out.insertAdjacentHTML('beforeend', this.endCap());
             this.updateRosterTable();
         },
 
         generateNPCs() {
-            const count = parseInt(document.getElementById('npcCount').value)||4;
+            const count = Math.min(20, parseInt(document.getElementById('npcCount').value)||4);
             const type = document.getElementById('npcType').value;
             const levelRange = document.getElementById('npcLevelRange').value;
             const out = document.getElementById('npc-output');
             out.innerHTML = '';
-
-            for(let i=0;i<count;i++) {
-                let isGen = type==='general';
-                let level = this.parseLevelRange(levelRange);
-                let charClass = "Commoner", race = "Human";
-
-                if(!isGen || level > 0) {
-                    charClass = this.rollTable(this.classes);
-                    race = this.rollTable(this.classRaces[charClass]);
+            for (let i=0;i<count;i++) {
+                const level = this.parseLevelRange(levelRange);
+                let rec, name;
+                if (type==='general' || level < 1) {
+                    const isMale = Q.pct() <= 50;
+                    const stats = Q.generalStats();
+                    rec = { race:'Human', charClass:'Commoner', classes:['Commoner'], level:0, levelText:'0', stats, statsText:stats, gender:isMale?'Male':'Female', align:Q.rollAlign(), hp:Q.roll(6), ac:10, equipment:[], spells:null, xp:0, titles:'Level 0' };
+                } else {
+                    const p = Q.genSpecialNPC(level, {});
+                    rec = Q.npcToRecord(p, []);
+                    rec.skills = Q.skillText(rec.classes, rec.levels, rec.race, rec.stats.dex);
                 }
-
-                let stats = this.rollStats(isGen ? 0 : 1, isGen);
-
-                // FIX: always convert array to object for non-general NPCs, not just level > 0
-                if (!isGen) {
-                    stats = this.assignStats(stats, charClass);
-                    stats = this.applyClassMinimums(stats, charClass);
-                }
-                stats = this.applyRaceAdjustments(stats, race);
-
-                let isMale = this.determineSex(charClass);
-                let ac = this.calculateAC(charClass, level, [], stats);
-                let spells = this.getSpellbook(charClass, level, stats, false);
-
-                let traits = {
-                    age: this.rollTable(this.npcAge),
-                    general: this.rollTable(this.npcGeneral),
-                    sanity: this.rollTable(this.npcSanity),
-                    tendency: this.rollTable(this.npcTendencies),
-                    disposition: this.rollTable(this.npcDisposition),
-                    intellect: this.rollTable(this.npcIntellect),
-                    nature: this.rollTable(this.npcNature),
-                    honesty: this.rollTable(this.npcHonesty),
-                    bravery: this.rollTable(this.npcBravery),
-                    morals: this.rollTable(this.npcMorals),
-                    piety: this.rollTable(this.npcPiety),
-                    energy: this.rollTable(this.npcEnergy),
-                    interest: this.rollTable(this.npcInterests)
-                };
-                if(traits.interest.includes('collecting')) traits.interest += ` (${this.rollTable(this.npcCollections)})`;
-
-                let idNum = String(Math.floor(Math.random()*99999)).padStart(5,'0');
-                let npc = {
-                    type:'NPC', name:this.generateName(race,charClass,isMale),
-                    id:`NPC-${idNum}`, badge:'NON-PLAYER CHARACTER',
-                    race, charClass, level, stats, spells,
-                    gender:isMale?'Male':'Female',
-                    hw:this.rollHeightWeight(race,isMale),
-                    align:this.rollTable(this.npcAlignments),
-                    wealth:this.rollTable(this.npcPossessions),
-                    reaction:this.getNPCReaction(),
-                    traits, ac
-                };
+                const isMale = rec.gender === 'Male';
+                name = this.generateName(rec.race, rec.classes[0], isMale);
+                const npc = Object.assign(rec, { type:'NPC', name, id:this.newId('NPC'), badge:'NON-PLAYER CHARACTER', hw:Q.heightWeight(rec.race, isMale), reaction:Q.reaction(), traits:Q.npcTraits() });
                 this.roster.push(npc);
                 out.insertAdjacentHTML('beforeend', this.buildCardHTML(npc));
             }
@@ -1396,90 +789,30 @@
         },
 
         generateRivalParty() {
-            const dungeonLevel = Math.min(20, Math.max(1, parseInt(document.getElementById('rivalDungeonLevel').value)||4));
+            const D = Math.min(20, Math.max(1, parseInt(document.getElementById('rivalDungeonLevel').value)||4));
             const out = document.getElementById('rival-output');
             out.innerHTML = '';
-
-            let numChars = this.roll(4)+1;
-            let numFollowers = 9-numChars;
-            let partyAlignment = this.rollTable(this.npcAlignments);
-            let classCounts = {};
-            let coreChars = [];
-
-            for(let i=0;i<numChars;i++) {
-                let charClass = this.rollRivalClass(classCounts);
-                let race = this.rollTable(this.classRaces[charClass]);
-                let isMale = this.determineSex(charClass);
-                let lvlMod = this.roll(6);
-                let charLevel = lvlMod>dungeonLevel ? dungeonLevel-1 : (lvlMod<dungeonLevel ? dungeonLevel+1 : dungeonLevel);
-                charLevel = Math.max(1, Math.min(charLevel, 15));
-
-                let pool = this.rollStats(1);
-                let stats = this.assignStats(pool, charClass);
-                stats = this.applyClassMinimums(stats, charClass);
-                stats = this.applyRaceAdjustments(stats, race);
-
-                let equip = this.getRivalMagicItems(charLevel);
-                let ac = this.calculateAC(charClass, charLevel, equip, stats);
-                let spells = this.getSpellbook(charClass, charLevel, stats, true);
-                let idNum = String(Math.floor(Math.random()*99999)).padStart(5,'0');
-
-                let pc = {
-                    type:'Rival (Core)', name:this.generateName(race,charClass,isMale), race, charClass,
-                    level:charLevel, stats, equipment:equip, spells, align:partyAlignment,
-                    gender:isMale?'Male':'Female', id:`RIV-${idNum}`, badge:'RIVAL: CORE', ac
-                };
-                coreChars.push(pc);
-                this.roster.push(pc);
-                out.insertAdjacentHTML('beforeend', this.buildCardHTML(pc));
-            }
-
-            let isMenAtArms = dungeonLevel <= 3;
-            for(let i=0;i<numFollowers;i++) {
-                let master = coreChars[i % coreChars.length];
-                let idNum = String(Math.floor(Math.random()*99999)).padStart(5,'0');
-
-                if(isMenAtArms) {
-                    let type = this.rollTable(['Crossbowman','Spearman','Swordsman','Pikeman']);
-                    let stats = this.rollStats(0, true);
-                    let equip = ['Scale Mail','Shield','Standard Weapon'];
-                    let ac = this.calculateAC('Fighter', 0, equip, stats);
-                    let pc = {
-                        type:'Rival (Man-at-Arms)', name:this.generateName('Human','Fighter',true), race:'Human',
-                        charClass:`Fighter (${type})`, level:0, stats, equipment:equip, align:partyAlignment,
-                        gender:'Male', id:`FOLL-${idNum}`, badge:`FOLLOWER OF ${master.name.split(' ')[0].toUpperCase()}`, ac
-                    };
-                    this.roster.push(pc);
-                    out.insertAdjacentHTML('beforeend', this.buildCardHTML(pc));
+            const party = Q.genRival(D);
+            party.chars.forEach(c => {
+                const pc = Object.assign(c, { type:'Rival (Core)', name:this.generateName(c.race, c.classes[0], c.gender==='Male'), id:this.newId('RIV'), badge:'RIVAL: CORE' });
+                this.roster.push(pc); out.insertAdjacentHTML('beforeend', this.buildCardHTML(pc));
+            });
+            party.followers.forEach(f => {
+                const masterName = f.master ? f.master.name.split(' ')[0].toUpperCase() : 'PARTY';
+                if (f.kind === 'man-at-arms') {
+                    const pc = Object.assign({}, f, { type:'Rival (Man-at-Arms)', name:this.generateName('Human','Fighter',f.gender==='Male'), charClass:'Man-at-arms', level:0, levelText:'0', id:this.newId('FOLL'), badge:`MAN-AT-ARMS OF ${masterName}`, spells:null });
+                    this.roster.push(pc); out.insertAdjacentHTML('beforeend', this.buildCardHTML(pc));
                 } else {
-                    let charClass = this.rollRivalClass(classCounts);
-                    let race = this.rollTable(this.classRaces[charClass]);
-                    let isMale = this.determineSex(charClass);
-                    // FIX: henchman level = 2/3 master's level (was using wrong formula)
-                    let hLevel = Math.max(1, Math.floor(master.level * 2 / 3));
-
-                    let stats = this.rollStats(0, true);
-                    stats = this.applyClassMinimums(stats, charClass);
-                    stats = this.applyRaceAdjustments(stats, race);
-                    let equip = this.getRivalMagicItems(hLevel);
-                    let ac = this.calculateAC(charClass, hLevel, equip, stats);
-                    let spells = this.getSpellbook(charClass, hLevel, stats, true);
-
-                    let pc = {
-                        type:'Rival (Henchman)', name:this.generateName(race,charClass,isMale), race, charClass,
-                        level:hLevel, stats, equipment:equip, spells, align:partyAlignment,
-                        gender:isMale?'Male':'Female', id:`HENCH-${idNum}`,
-                        badge:`HENCHMAN TO ${master.name.split(' ')[0].toUpperCase()}`, ac
-                    };
-                    this.roster.push(pc);
-                    out.insertAdjacentHTML('beforeend', this.buildCardHTML(pc));
+                    const pc = Object.assign(f, { type:'Rival (Henchman)', name:this.generateName(f.race, f.classes[0], f.gender==='Male'), id:this.newId('HENCH'), badge:`HENCHMAN TO ${masterName}` });
+                    this.roster.push(pc); out.insertAdjacentHTML('beforeend', this.buildCardHTML(pc));
                 }
-            }
+            });
+            out.insertAdjacentHTML('beforeend', `<div class="border-r-2 border-b-2 border-black p-6 bg-surface-container-low font-body text-[11px] leading-snug"><b>Party notes</b><br>Alignments (DMG p.175, must be compatible): ${party.align.join(', ')}.<br>${party.chars.length} characters and ${party.followers.length} ${D<=3?'men-at-arms':'henchmen'} (total ${party.chars.length+party.followers.length}).</div>`);
             out.insertAdjacentHTML('beforeend', this.endCap());
             this.updateRosterTable();
         },
 
-        generateStandaloneNames() {
+                generateStandaloneNames() {
             const count = Math.min(20, Math.max(1, parseInt(document.getElementById('nameCount').value)||5));
             const originVal = document.getElementById('nameOrigin').value;
             const sexVal = document.getElementById('nameSex').value;
@@ -1511,6 +844,7 @@
             out.insertAdjacentHTML('beforeend', this.endCap());
         },
 
+
         endCap() {
             return `<div class="border-r-2 border-b-2 border-black p-12 flex flex-col items-center justify-center bg-white relative h-full min-h-[300px]">
                 <div class="stippled-bg w-full h-full absolute inset-0"></div>
@@ -1520,58 +854,40 @@
 
         updateRosterTable() {
             const tbody = document.getElementById('roster-output');
-            if(this.roster.length===0) {
-                tbody.innerHTML='<tr><td colspan="6" class="p-8 text-center italic font-serif">No characters inscribed yet.</td></tr>';
-                return;
-            }
+            if(this.roster.length===0) { tbody.innerHTML='<tr><td colspan="6" class="p-8 text-center italic font-serif">No characters inscribed yet.</td></tr>'; return; }
             tbody.innerHTML = this.roster.map(c => `
                 <tr class="hover:bg-black hover:text-white transition-none cursor-pointer border-b-2 border-primary">
                     <td class="p-4 border-r-2 border-primary font-bold text-xs">${c.type}</td>
                     <td class="p-4 border-r-2 border-primary font-bold truncate max-w-[150px]">${c.name}</td>
                     <td class="p-4 border-r-2 border-primary">${c.charClass} / ${c.race} (${c.gender.charAt(0)})</td>
-                    <td class="p-4 border-r-2 border-primary text-center font-bold">${c.level}</td>
-                    <td class="p-4 border-r-2 border-primary">${c.align||'—'}</td>
-                    <td class="p-4 text-[10px] text-center tracking-widest">${c.stats && typeof c.stats==='object' && !Array.isArray(c.stats) ? `${c.stats.str}-${c.stats.dex}-${c.stats.con}-${c.stats.int}-${c.stats.wis}-${c.stats.cha}` : '—'}</td>
+                    <td class="p-4 border-r-2 border-primary text-center font-bold">${c.levelText !== undefined ? c.levelText : c.level}</td>
+                    <td class="p-4 border-r-2 border-primary">${c.align||'-'}</td>
+                    <td class="p-4 text-[10px] text-center tracking-widest">${c.statsText ? `${c.statsText.str}-${c.statsText.dex}-${c.statsText.con}-${c.statsText.int}-${c.statsText.wis}-${c.statsText.cha}` : '-'}</td>
                 </tr>`).join('');
         },
 
-        emptyState(id) {
-            return `<div class="border-r-2 border-b-2 border-black p-12 flex flex-col items-center justify-center bg-surface-container-low border-dashed h-full min-h-[300px]"><p class="font-label text-xs font-bold uppercase opacity-60">AWAITING MANIFEST GENERATION</p></div>`;
-        },
+        emptyState(id) { return `<div class="border-r-2 border-b-2 border-black p-12 flex flex-col items-center justify-center bg-surface-container-low border-dashed h-full min-h-[300px]"><p class="font-label text-xs font-bold uppercase opacity-60">AWAITING MANIFEST GENERATION</p></div>`; },
 
         clearRoster() {
             this.roster = [];
-            ['pc-output','rival-output','npc-output','name-output','merc-output'].forEach(id => {
-                document.getElementById(id).innerHTML = this.emptyState(id);
-            });
+            ['pc-output','rival-output','npc-output','name-output','merc-output'].forEach(id => { document.getElementById(id).innerHTML = this.emptyState(id); });
             this.updateRosterTable();
         },
 
         exportToText() {
             if(this.roster.length===0) return alert("Archive empty. Nothing to export.");
+            const plain = s => String(s||'').replace(/<br>/g,'\n').replace(/<[^>]*>?/gm,'');
             let text = "=== QUICKPARTY ARCHIVE EXPORT ===\n\n";
             this.roster.forEach(c => {
-                text += `${c.name} (${c.type})\n`;
-                if(c.type==='NPC') text += `${c.align} | ${c.gender} ${c.race} ${c.level>0?c.charClass:'Commoner'} (Lvl ${c.level}) | AC ${c.ac}\n`;
-                else if(c.type==='Name') text += `Origin: ${c.race} | Sex: ${c.gender} | Class Mod: ${c.charClass||'None'}\n`;
-                else text += `${c.align} | ${c.race} ${c.charClass} (Lvl ${c.level}) | Sex: ${c.gender} | AC ${c.ac}\n`;
-                if(c.stats && typeof c.stats==='object' && !Array.isArray(c.stats))
-                    text += `STR:${c.stats.str} INT:${c.stats.int} WIS:${c.stats.wis} DEX:${c.stats.dex} CON:${c.stats.con} CHA:${c.stats.cha}\n`;
-                if(c.type==='PC'||c.type.includes('Rival')) {
-                    text += `Equipment: ${(c.equipment||[]).join(', ')}\n`;
-                    if(c.spells) text += `Spells:\n${c.spells.replace(/<br>/g,'\n').replace(/<[^>]*>?/gm,'')}\n`;
-                } else if(c.type==='Name') {
-                    text += `Rolls: ${c.rolls}\n`;
-                } else {
-                    if(c.spells) text += `Spells:\n${c.spells.replace(/<br>/g,'\n').replace(/<[^>]*>?/gm,'')}\n`;
-                    if(c.traits) {
-                        text += `Persona: ${c.traits.age}, ${c.traits.general}. Sanity: ${c.traits.sanity}.\n`;
-                        text += `Traits: ${c.traits.disposition}, ${c.traits.tendency}. Intellect: ${c.traits.intellect}.\n`;
-                        text += `Morals: ${c.traits.morals}. Piety: ${c.traits.piety}. Bravery: ${c.traits.bravery}.\n`;
-                        text += `Interests: ${c.traits.interest}.\n`;
-                        text += `Reaction: ${c.reaction}\n`;
-                    }
-                }
+                const lvl = c.levelText !== undefined ? c.levelText : c.level;
+                text += `${c.name} (${c.type})\n${c.align||'-'} | ${c.gender} ${c.race} ${c.charClass} (Lvl ${lvl}) | AC ${c.ac} | HP ${c.hp}\n`;
+                if (c.statsText) text += `STR:${c.statsText.str} INT:${c.statsText.int} WIS:${c.statsText.wis} DEX:${c.statsText.dex} CON:${c.statsText.con} CHA:${c.statsText.cha}\n`;
+                if (c.xp !== undefined) text += `XP ${c.xp}${c.titles ? ' | ' + c.titles : ''}\n`;
+                if (c.equipment && c.equipment.length) text += `Equipment: ${c.equipment.join(', ')}\n`;
+                if (c.skills) text += `Thief skills: ${c.skills}\n`;
+                if (c.spells) text += `Spells:\n${plain(c.spells)}\n`;
+                if (c.traits) { const t = c.traits;
+                    text += `Look: ${t.age}, ${t.appearance}; ${c.hw}. Possessions ${t.possessions}.\nTendencies: ${t.tendencies}. Personality: ${t.personality}, ${t.disposition}. Intellect: ${t.intellect}. Sanity: ${t.sanity}.\nMorals: ${t.morals}. Piety: ${t.piety}. Bravery: ${t.bravery}. Interest: ${t.interest}.\nReaction: ${c.reaction}\n`; }
                 text += "--------------------------------\n\n";
             });
             try {
@@ -1585,154 +901,27 @@
         },
 
         // =====================================================================
-        // MERCENARY DATA & GENERATOR
+        // MERCENARIES (DMG p.29-31; tables in rules.js)
         // =====================================================================
-        mercTroopData: {
-            'archer (longbow)':      { qty:[{min:1,max:4},{min:2,max:5},{min:3,max:12},{min:5,max:20}],   pay:4, cat:'missile' },
-            'archer (shortbow)':     { qty:[{min:1,max:6},{min:2,max:8},{min:4,max:16},{min:5,max:30}],   pay:2, cat:'missile' },
-            'artillerist':           { qty:[{min:1,max:1},{min:2,max:2},{min:3,max:3},{min:4,max:4}],     pay:8, cat:'specialty' },
-            'crossbowman':           { qty:[{min:1,max:6},{min:2,max:8},{min:5,max:20},{min:8,max:48}],   pay:3, cat:'missile' },
-            'footman, heavy':        { qty:[{min:1,max:6},{min:2,max:12},{min:5,max:30},{min:10,max:60}], pay:2, cat:'foot' },
-            'footman, light':        { qty:[{min:1,max:4},{min:2,max:8},{min:3,max:12},{min:5,max:20}],   pay:1, cat:'foot' },
-            'footman, pikeman':      { qty:[{min:2,max:5},{min:3,max:12},{min:5,max:20},{min:10,max:40}], pay:2, cat:'foot' },
-            'hobilar, heavy':        { qty:[{min:1,max:3},{min:2,max:5},{min:3,max:12},{min:4,max:16}],   pay:5, cat:'horse' },
-            'hobilar, light':        { qty:[{min:1,max:4},{min:2,max:8},{min:3,max:12},{min:5,max:20}],   pay:3, cat:'horse' },
-            'horseman, archer':      { qty:[{min:1,max:2},{min:1,max:6},{min:2,max:8},{min:3,max:12}],    pay:5, cat:'horse' },
-            'horseman, crossbowman': { qty:[{min:1,max:4},{min:2,max:8},{min:3,max:12},{min:5,max:20}],   pay:4, cat:'horse' },
-            'horseman, heavy':       { qty:[{min:1,max:3},{min:2,max:5},{min:3,max:12},{min:4,max:16}],   pay:6, cat:'horse' },
-            'horseman, light':       { qty:[{min:1,max:4},{min:2,max:8},{min:4,max:16},{min:5,max:30}],   pay:3, cat:'horse' },
-            'horseman, medium':      { qty:[{min:1,max:3},{min:2,max:5},{min:3,max:12},{min:4,max:16}],   pay:4, cat:'horse' },
-            'sapper/miner':          { qty:[{min:1,max:2},{min:1,max:4},{min:2,max:5},{min:2,max:8}],     pay:3, cat:'specialty' },
-            'slinger':               { qty:[{min:1,max:1},{min:1,max:6},{min:2,max:8},{min:3,max:12}],    pay:1, cat:'missile' },
-        },
-        mercMissileTroops: ['archer (longbow)','archer (shortbow)','crossbowman','slinger','horseman, archer','horseman, crossbowman'],
-        mercFootTroops:    ['footman, heavy','footman, light','footman, pikeman'],
-        mercHorseTroops:   ['hobilar, heavy','hobilar, light','horseman, heavy','horseman, light','horseman, medium'],
-
-        rollRangeQty(min, max) {
-            if (min === max) return min;
-            return min + Math.floor(Math.random() * (max - min + 1));
-        },
-
-        calcSergeants(count) {
-            if (count <= 5) return 0;
-            let min = Math.max(1, Math.ceil(count / 10));
-            let max = Math.ceil(count / 5);
-            if (max <= min) return min;
-            return min + Math.floor(Math.random() * (max - min + 1));
-        },
-
-        mercTypeFromRoll(r) {
-            if (r <= 4)   return 'archer (longbow)';
-            if (r <= 10)  return 'archer (shortbow)';
-            if (r <= 12)  return 'artillerist';
-            if (r <= 13)  return '_captain';
-            if (r <= 20)  return 'crossbowman';
-            if (r <= 30)  return 'footman, heavy';
-            if (r <= 37)  return 'footman, light';
-            if (r <= 40)  return 'footman, pikeman';
-            if (r === 41) return '_lieutenant';
-            if (r <= 44)  return 'hobilar, heavy';
-            if (r <= 48)  return 'hobilar, light';
-            if (r === 49) return 'horseman, archer';
-            if (r <= 53)  return 'horseman, crossbowman';
-            if (r <= 58)  return 'horseman, heavy';
-            if (r <= 70)  return 'horseman, light';
-            if (r <= 78)  return 'horseman, medium';
-            if (r <= 80)  return 'sapper/miner';
-            if (r <= 85)  return '_sergeant';
-            if (r <= 88)  return 'slinger';
-            if (r <= 96)  return this.rollTable(this.mercMissileTroops);
-            if (r <= 99)  return this.rollTable(this.mercFootTroops);
-            return this.rollTable(this.mercHorseTroops);
-        },
-
         generateMercenaries() {
             const count   = Math.min(8, Math.max(1, parseInt(document.getElementById('mercCount').value)||1));
             const typeVal = document.getElementById('mercType').value;
             const tierVal = document.getElementById('mercTier').value;
             const out     = document.getElementById('merc-output');
             out.innerHTML = '';
-
             for (let i = 0; i < count; i++) {
                 let troopType, dPercent = null;
-                if (typeVal === 'random') {
-                    dPercent  = this.rollPercentile();
-                    troopType = this.mercTypeFromRoll(dPercent);
-                } else {
-                    troopType = typeVal;
-                }
-
-                let tierIdx, dTen = null;
-                if (tierVal === 'random') {
-                    dTen = this.roll(10);
-                    if      (dTen <= 4) tierIdx = 0;
-                    else if (dTen <= 7) tierIdx = 1;
-                    else if (dTen <= 9) tierIdx = 2;
-                    else                tierIdx = 3;
-                } else {
-                    tierIdx = parseInt(tierVal);
-                    dTen    = [2, 6, 8, 10][tierIdx];
-                }
-
+                if (typeVal === 'random') { dPercent = Q.pct(); troopType = Q.mercType(dPercent); } else troopType = typeVal;
+                let tierIdx, dTen;
+                if (tierVal === 'random') { dTen = Q.roll(10); tierIdx = Q.mercTier(dTen); }
+                else { tierIdx = parseInt(tierVal); dTen = [2, 6, 8, 10][tierIdx]; }
                 out.insertAdjacentHTML('beforeend', this.buildMercCardHTML(troopType, tierIdx, dTen, dPercent));
             }
             out.insertAdjacentHTML('beforeend', this.endCap());
         },
 
-        buildMercCardHTML(troopType, tierIdx, dTen, dPercent) {
-            const tierLabels = ['I (1–4)', 'II (5–7)', 'III (8–9)', 'IV (0)'];
-            const idNum  = String(Math.floor(Math.random()*99999)).padStart(5,'0');
-            const cardId = `MERC-${idNum}`;
-
-            if (troopType === '_captain' || troopType === '_lieutenant' || troopType === '_sergeant')
-                return this.buildMercLeaderCardHTML(troopType, dPercent, cardId);
-
-            const data = this.mercTroopData[troopType];
-            if (!data) return '';
-
-            const qRange  = data.qty[tierIdx];
-            const count   = this.rollRangeQty(qRange.min, qRange.max);
-            const numSgts = this.calcSergeants(count);
-            const sgtPay  = data.pay * 10;
-
-            const needsLt  = (tierIdx === 2 && count > 10);
-            const needsCpt = (tierIdx === 3 && count > 20);
-
-            let ltLevel = 0, ltPay = 0;
-            if (needsLt) {
-                ltLevel = (this.roll(10) <= 7) ? 2 : 3;
-                ltPay   = ltLevel * 100;
-            }
-            let cptLevel = 0, cptPay = 0;
-            if (needsCpt) {
-                let r = this.roll(10);
-                cptLevel = r <= 4 ? 5 : r <= 7 ? 6 : r <= 9 ? 7 : 8;
-                cptPay   = cptLevel * 100;
-            }
-
-            const troopCost = count   * data.pay;
-            const sgtCost   = numSgts * sgtPay;
-            const totalCost = troopCost + sgtCost + ltPay + cptPay;
-
-            let dNote = dPercent && dPercent >= 89 ? (dPercent <= 96 ? ' → any missile' : dPercent <= 99 ? ' → any foot' : ' → any horse') : '';
-
-            let copyRaw =
-                `${troopType.toUpperCase()} (Mercenary Unit)\n` +
-                `Troops: ${count} | Tier ${tierLabels[tierIdx]}` + (dTen !== null ? ` (d10: ${dTen===10?'0':dTen})` : '') + '\n' +
-                (numSgts > 0 ? `Sergeants: ${numSgts} @ ${sgtPay}gp/mo\n` : '') +
-                (needsLt    ? `Lieutenant: ${ltLevel}th level Fighter @ ${ltPay}gp/mo\n` : '') +
-                (needsCpt   ? `Captain: ${cptLevel}th level Fighter @ ${cptPay}gp/mo\n` : '') +
-                `HP Pool: ${count*4}–${count*7} total\n` +
-                `Monthly Cost: ${totalCost}gp\n` +
-                `  ${count}×${data.pay}gp=${troopCost}gp` +
-                (numSgts > 0 ? `, ${numSgts} sgt${numSgts>1?'s':''}×${sgtPay}gp=${sgtCost}gp` : '') +
-                (needsLt    ? `, Lt.${ltLevel}th=${ltPay}gp` : '') +
-                (needsCpt   ? `, Cpt.${cptLevel}th=${cptPay}gp` : '') + '\n';
-
-            let safe = copyRaw.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-            let d10Label = dTen !== null ? ` · d10: ${dTen===10?'0':dTen}` : '';
-
+        mercShell(cardId, badge, titleText, inner, copyRaw) {
+            const safe = copyRaw.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
             return `
             <div class="border-r-2 border-b-2 border-black p-6 relative overflow-hidden bg-white group hover:bg-surface-container-low transition-colors duration-0" id="${cardId}">
                 <button onclick="app.copyTextFromCard('${cardId}')" class="absolute top-4 right-4 p-1.5 bg-white border-2 border-black opacity-0 group-hover:opacity-100 z-20 hover:bg-black hover:text-white" title="Copy">
@@ -1740,127 +929,77 @@
                 </button>
                 <textarea class="hidden" id="raw-${cardId}">${safe}</textarea>
                 <div class="mb-4 pr-8">
-                    <span class="font-mono font-bold tracking-widest text-[10px] bg-black text-white px-2 py-0.5">MERCENARY UNIT</span>
-                    <h3 class="font-headline font-bold text-2xl uppercase mt-1 leading-tight">${troopType.toUpperCase()}</h3>
+                    <span class="font-mono font-bold tracking-widest text-[10px] bg-black text-white px-2 py-0.5">${badge}</span>
+                    <h3 class="font-headline font-bold text-2xl uppercase mt-1 leading-tight">${titleText}</h3>
                 </div>
-                <div class="bg-surface-container-highest p-3 border-2 border-black mb-4">
-                    <div class="flex justify-between border-b border-black/20 pb-1 mb-1">
-                        <span class="font-label text-[10px] font-bold uppercase">Strength</span>
-                        <span class="font-mono text-[10px] font-bold">${count} troops</span>
-                    </div>
-                    <div class="flex justify-between border-b border-black/20 pb-1 mb-1">
-                        <span class="font-label text-[10px] font-bold uppercase">Tier / Roll</span>
-                        <span class="font-mono text-[10px]">Tier ${tierLabels[tierIdx]}${d10Label}</span>
-                    </div>
-                    <div class="flex justify-between border-b border-black/20 pb-1 mb-1">
-                        <span class="font-label text-[10px] font-bold uppercase">Sergeants</span>
-                        <span class="font-mono text-[10px]">${numSgts > 0 ? numSgts+' @ '+sgtPay+'gp/mo' : 'None'}</span>
-                    </div>
-                    ${needsLt ? `<div class="flex justify-between border-b border-black/20 pb-1 mb-1">
-                        <span class="font-label text-[10px] font-bold uppercase">Lieutenant</span>
-                        <span class="font-mono text-[10px] font-bold">${ltLevel}th lvl Fighter · ${ltPay}gp/mo</span>
-                    </div>` : ''}
-                    ${needsCpt ? `<div class="flex justify-between border-b border-black/20 pb-1 mb-1">
-                        <span class="font-label text-[10px] font-bold uppercase">Captain</span>
-                        <span class="font-mono text-[10px] font-bold">${cptLevel}th lvl Fighter · ${cptPay}gp/mo</span>
-                    </div>` : ''}
-                    <div class="flex justify-between border-b border-black/20 pb-1 mb-1">
-                        <span class="font-label text-[10px] font-bold uppercase">HP Pool</span>
-                        <span class="font-mono text-[10px]">${count*4}–${count*7} total (4–7/man)</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="font-label text-[10px] font-bold uppercase">Monthly Pay</span>
-                        <span class="font-mono text-[10px] font-bold">${totalCost} gp</span>
-                    </div>
-                </div>
-                <div class="font-mono text-[9px] opacity-50 space-y-0.5 leading-relaxed">
-                    <div>${count} troops × ${data.pay}gp = ${troopCost}gp</div>
-                    ${numSgts > 0 ? `<div>${numSgts} sgt${numSgts>1?'s':''} × ${sgtPay}gp = ${sgtCost}gp</div>` : ''}
-                    ${needsLt  ? `<div>1 lieutenant (${ltLevel}th lvl) = ${ltPay}gp</div>` : ''}
-                    ${needsCpt ? `<div>1 captain (${cptLevel}th lvl) = ${cptPay}gp</div>` : ''}
-                    ${dPercent ? `<div class="mt-1 opacity-60">d%: ${dPercent}${dNote}</div>` : ''}
-                </div>
+                ${inner}
                 <div class="absolute bottom-0 right-0 w-16 h-16 hatched-border opacity-20 pointer-events-none"></div>
             </div>`;
+        },
+
+        buildMercCardHTML(troopType, tierIdx, dTen, dPercent) {
+            const tierLabels = ['I (1-4)', 'II (5-7)', 'III (8-9)', 'IV (0)'];
+            const cardId = this.newId('MERC');
+            if (troopType === '_captain' || troopType === '_lieutenant' || troopType === '_serjeant') return this.buildMercLeaderCardHTML(troopType, dPercent, cardId);
+            if (!Q.MERC[troopType]) return '';
+            const u = Q.mercUnit(troopType, tierIdx);
+            const d10Label = dTen !== null ? ` · d10: ${dTen===10?'0':dTen}` : '';
+            const dNote = dPercent && dPercent >= 89 ? (dPercent <= 90 ? ' (any missile troop)' : dPercent <= 96 ? ' (any footman)' : dPercent <= 99 ? ' (any horseman)' : ' (specialist or leader)') : '';
+            const row = (a,b,last) => `<div class="flex justify-between ${last?'':'border-b border-black/20 pb-1 mb-1'}"><span class="font-label text-[10px] font-bold uppercase">${a}</span><span class="font-mono text-[10px]">${b}</span></div>`;
+            const copyRaw = `${troopType.toUpperCase()} (Mercenary Unit)\nStrength: ${u.count} (including ${u.sgts} serjeant${u.sgts===1?'':'s'})\nTier ${tierLabels[tierIdx]}${d10Label}\n` +
+                (u.sgts ? `Serjeants: ${u.sgts} @ ${u.sgtPay}gp/mo (1st level fighters)\n` : '') + (u.lt ? `Lieutenant: ${u.lt}nd/rd level Fighter @ ${u.lt*100}gp/mo\n` : '') + (u.cpt ? `Captain: ${u.cpt}th level Fighter @ ${u.cpt*100}gp/mo\n` : '') +
+                `HP: 4-7 each (${u.hpMin}-${u.hpMax} total)\nMonthly cost: ${u.cost}gp (arms and armour not included)\n`;
+            const inner = `
+                <div class="bg-surface-container-highest p-3 border-2 border-black mb-4">
+                    ${row('Strength', `${u.count} total`)}${row('Tier / Roll', `Tier ${tierLabels[tierIdx]}${d10Label}`)}
+                    ${row('Troops', `${u.troops} @ ${u.pay}gp/mo`)}${row('Serjeants', u.sgts ? `${u.sgts} @ ${u.sgtPay}gp/mo` : 'None')}
+                    ${u.lt ? row('Lieutenant', `${u.lt}th lvl Fighter · ${u.lt*100}gp/mo`) : ''}${u.cpt ? row('Captain', `${u.cpt}th lvl Fighter · ${u.cpt*100}gp/mo`) : ''}
+                    ${row('HP', `4-7 each, ${u.hpMin}-${u.hpMax} total`)}${row('Monthly Pay', `<b>${u.cost} gp</b>`, true)}
+                </div>
+                <div class="font-mono text-[9px] opacity-50 space-y-0.5 leading-relaxed">
+                    <div>${u.troops} troops × ${u.pay}gp = ${u.troops*u.pay}gp</div>
+                    ${u.sgts ? `<div>${u.sgts} serjeant${u.sgts>1?'s':''} × ${u.sgtPay}gp = ${u.sgts*u.sgtPay}gp</div>` : ''}
+                    ${u.lt ? `<div>1 lieutenant (${u.lt}th lvl) = ${u.lt*100}gp</div>` : ''}${u.cpt ? `<div>1 captain (${u.cpt}th lvl) = ${u.cpt*100}gp</div>` : ''}
+                    ${dPercent ? `<div class="mt-1 opacity-60">d%: ${dPercent}${dNote}</div>` : ''}
+                </div>`;
+            return this.mercShell(cardId, 'MERCENARY UNIT', troopType.toUpperCase(), inner, copyRaw);
         },
 
         buildMercLeaderCardHTML(leaderType, dPercent, cardId) {
             let title, level, pay, commandNote, desc;
             if (leaderType === '_captain') {
-                let r = this.roll(10);
-                level = r <= 4 ? 5 : r <= 7 ? 6 : r <= 9 ? 7 : 8;
-                pay = level * 100;
-                title = 'CAPTAIN';
+                level = Q.captainLevel(); pay = level * 100; title = 'CAPTAIN';
                 commandNote = `Up to ${level * 20} men (${level} scores)`;
-                desc = `${level}th level Fighter. Commands up to ${level} scores of troops & ${level} lieutenant${level>1?'s':''}.`;
+                desc = `${level}th level Fighter, cannot advance. Commands ${level} scores of troops and controls ${level} lieutenants (DMG p.30).`;
             } else if (leaderType === '_lieutenant') {
-                level = (this.roll(10) <= 7) ? 2 : 3;
-                pay = level * 100;
-                title = 'LIEUTENANT';
+                level = Q.lieutLevel(); pay = level * 100; title = 'LIEUTENANT';
                 commandNote = `Up to ${level * 10} men (${level} decades)`;
-                desc = `${level}th level Fighter. Commands up to ${level} decades + ${level} additional sgt${level>1?'s':''}.`;
+                desc = `${level}th level Fighter, cannot advance. Commands ${level} decades and directs ${level} extra serjeants (DMG p.31).`;
             } else {
-                level = 1; pay = null;
-                title = 'SERGEANT';
+                level = 1; pay = null; title = 'SERJEANT';
                 commandNote = 'Up to 10 soldiers';
-                desc = '1st level Fighter. Commands up to 10 soldiers. Pay = 10× troop rate (10–60gp/mo).';
+                desc = '1st level Fighter, cannot advance. Monthly cost is 10 times the rate of the troops he or she commands (DMG p.31).';
             }
-
-            let copyRaw =
-                `${title} (Standalone Leader Encounter)\n` +
-                `Level: ${level}th level Fighter\n` +
-                `Monthly Pay: ${pay ? pay+'gp' : '10× troop rate'}\n` +
-                `Command: ${commandNote}\n${desc}\n` +
-                (dPercent ? `d%: ${dPercent}\n` : '');
-
-            let safe = copyRaw.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-
-            return `
-            <div class="border-r-2 border-b-2 border-black p-6 relative overflow-hidden bg-white group hover:bg-surface-container-low transition-colors duration-0" id="${cardId}">
-                <button onclick="app.copyTextFromCard('${cardId}')" class="absolute top-4 right-4 p-1.5 bg-white border-2 border-black opacity-0 group-hover:opacity-100 z-20 hover:bg-black hover:text-white" title="Copy">
-                    <span class="material-symbols-outlined text-[16px] pointer-events-none">content_copy</span>
-                </button>
-                <textarea class="hidden" id="raw-${cardId}">${safe}</textarea>
-                <div class="mb-4 pr-8">
-                    <span class="font-mono font-bold tracking-widest text-[10px] bg-black text-white px-2 py-0.5">LEADER ENCOUNTER</span>
-                    <h3 class="font-headline font-bold text-2xl uppercase mt-1 leading-tight">${title}</h3>
-                </div>
+            const copyRaw = `${title} (Standalone Leader Encounter)\nLevel: ${level}th level Fighter\nMonthly Pay: ${pay ? pay+'gp' : '10x troop rate'}\nCommand: ${commandNote}\n${desc}\n` + (dPercent ? `d%: ${dPercent}\n` : '');
+            const row = (a,b,last) => `<div class="flex justify-between ${last?'':'border-b border-black/20 pb-1 mb-1'}"><span class="font-label text-[10px] font-bold uppercase">${a}</span><span class="font-mono text-[10px]">${b}</span></div>`;
+            const inner = `
                 <div class="bg-surface-container-highest p-3 border-2 border-black mb-4">
-                    <div class="flex justify-between border-b border-black/20 pb-1 mb-1">
-                        <span class="font-label text-[10px] font-bold uppercase">Level</span>
-                        <span class="font-mono text-[10px] font-bold">${level}th level Fighter</span>
-                    </div>
-                    <div class="flex justify-between border-b border-black/20 pb-1 mb-1">
-                        <span class="font-label text-[10px] font-bold uppercase">Monthly Pay</span>
-                        <span class="font-mono text-[10px] font-bold">${pay ? pay+'gp' : '10× troop rate'}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="font-label text-[10px] font-bold uppercase">Command</span>
-                        <span class="font-mono text-[10px]">${commandNote}</span>
-                    </div>
+                    ${row('Level', `${level}th level Fighter`)}${row('Monthly Pay', pay ? pay+'gp' : '10x troop rate')}${row('Command', commandNote, true)}
                 </div>
                 <p class="font-body text-[11px] leading-snug opacity-70 mb-2">${desc}</p>
-                ${dPercent ? `<div class="font-mono text-[9px] opacity-40">d%: ${dPercent}</div>` : ''}
-                <div class="absolute bottom-0 right-0 w-16 h-16 hatched-border opacity-20 pointer-events-none"></div>
-            </div>`;
+                ${dPercent ? `<div class="font-mono text-[9px] opacity-40">d%: ${dPercent}</div>` : ''}`;
+            return this.mercShell(cardId, 'LEADER ENCOUNTER', title, inner, copyRaw);
         }
     };
 
-    // --- TAB SWITCHING (FIX: properly toggle flex/block display) ---
+    // --- TAB SWITCHING ---
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            document.querySelectorAll('.tab-btn').forEach(t => {
-                t.classList.remove('active','bg-black','text-white');
-                t.classList.add('text-black');
-            });
+            document.querySelectorAll('.tab-btn').forEach(t => { t.classList.remove('active','bg-black','text-white'); t.classList.add('text-black'); });
             btn.classList.add('active','bg-black','text-white');
             btn.classList.remove('text-black');
-
             const target = btn.dataset.target;
-            document.querySelectorAll('.tab-content').forEach(c => {
-                c.classList.add('hidden');
-                c.classList.remove('flex'); // FIX: always remove flex before toggling
-            });
+            document.querySelectorAll('.tab-content').forEach(c => { c.classList.add('hidden'); c.classList.remove('flex'); });
             const el = document.getElementById(target);
             el.classList.remove('hidden');
             if(target !== 'tab-roster') el.classList.add('flex');
