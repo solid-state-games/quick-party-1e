@@ -92,3 +92,6 @@ Racial ability modifiers (PHB p.14); Cleric d8, Fighter d10 etc. (by test); cler
 15. Starting level 1 characters carry no magic (consistent with App. P "adventuring for some time").
 16. Level 0 commoners: hit points d6 (house rule; PHB p.34 says a man-at-arms takes about 5).
 17. Serjeants are counted within the number of troops encountered (DMG p.30 "1 will be a serjeant").
+
+## Studio Director rulings (2026-11-12)
+- The 13-15 "Epic" level option is removed: Quick Party stays inside DMG Appendix P (levels 1-12).

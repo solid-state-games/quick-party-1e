@@ -40,7 +40,7 @@ function checkChar(c, npc, tag) {
 // 1. 2000 PCs, all four methods and several level ranges
 const methods = [1, 2, 3, 4]; let n = 0; const raceSeen = new Set(), multiSeen = new Set();
 for (let i = 0; i < 500; i++) for (const m of methods) {
-  const lr = [[1,1],[2,4],[5,8],[9,12],[13,15]][i % 5];
+  const lr = [[1,1],[2,4],[5,8],[9,12]][i % 4];
   const party = Q.genPCParty({ count: 1, levelRange: lr, method: m, alignMode: i % 2 ? 'any' : 'compat' });
   const c = party.chars[0]; n++; raceSeen.add(c.race); if (c.classes.length > 1) multiSeen.add(c.classes.join('/'));
   checkChar(c, false, `PC#${n}`);
